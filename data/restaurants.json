@@ -1,0 +1,131 @@
+{
+  "RST-AEEC52FD": {
+    "id": "RST-AEEC52FD",
+    "ownerId": "USR-E8D659B4",
+    "name": "Dhaka Bites",
+    "description": "Authentic Bangladeshi home-style cooking",
+    "cuisineType": "Bangladeshi",
+    "address": {
+      "street": "45 Road 27",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "1209",
+      "latitude": 23.7512,
+      "longitude": 90.3752
+    },
+    "rating": 4.5,
+    "totalRatings": 120,
+    "isOpen": true,
+    "schedule": {
+      "openTime": "08:00",
+      "closeTime": "23:00",
+      "openDays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ]
+    },
+    "deliveryFeePerKm": 15.0,
+    "minOrderAmount": 100.0,
+    "estimatedDeliveryMinutes": 30,
+    "phoneNumber": "01800000001",
+    "approved": true
+  },
+  "RST-77791E00": {
+    "id": "RST-77791E00",
+    "ownerId": "USR-374EBB3E",
+    "name": "Dragon Palace",
+    "description": "Authentic Chinese cuisine in the heart of Gulshan",
+    "cuisineType": "Chinese",
+    "address": {
+      "street": "8 Gulshan Avenue",
+      "area": "Gulshan",
+      "city": "Dhaka",
+      "zipCode": "1212",
+      "latitude": 23.7808,
+      "longitude": 90.4148
+    },
+    "rating": 4.2,
+    "totalRatings": 85,
+    "isOpen": true,
+    "schedule": {
+      "openTime": "11:00",
+      "closeTime": "22:30",
+      "openDays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY"
+      ]
+    },
+    "deliveryFeePerKm": 20.0,
+    "minOrderAmount": 150.0,
+    "estimatedDeliveryMinutes": 40,
+    "phoneNumber": "01800000002",
+    "approved": true
+  },
+  "RST-042497AA": {
+    "id": "RST-042497AA",
+    "ownerId": "USR-E8D659B4",
+    "name": "Burger Republic",
+    "description": "Gourmet burgers \u0026 sides, fast!",
+    "cuisineType": "Fast Food",
+    "address": {
+      "street": "22 Banani Road 11",
+      "area": "Banani",
+      "city": "Dhaka",
+      "zipCode": "1213",
+      "latitude": 23.7939,
+      "longitude": 90.4053
+    },
+    "rating": 4.7,
+    "totalRatings": 340,
+    "isOpen": true,
+    "schedule": {
+      "openTime": "10:00",
+      "closeTime": "00:00",
+      "openDays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ]
+    },
+    "deliveryFeePerKm": 12.0,
+    "minOrderAmount": 80.0,
+    "estimatedDeliveryMinutes": 20,
+    "phoneNumber": "01800000003",
+    "approved": true
+  },
+  "RST-6242F46C": {
+    "id": "RST-6242F46C",
+    "ownerId": "USR-8FC8F544",
+    "name": "",
+    "cuisineType": "",
+    "address": {
+      "street": "",
+      "area": "",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "rating": 0.0,
+    "totalRatings": 0,
+    "isOpen": true,
+    "deliveryFeePerKm": 15.0,
+    "minOrderAmount": 150.0,
+    "estimatedDeliveryMinutes": 30,
+    "phoneNumber": "",
+    "approved": true
+  }
+}

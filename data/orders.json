@@ -1,0 +1,46 @@
+{
+  "ORD-0A6CD34B": {
+    "id": "ORD-0A6CD34B",
+    "customerId": "USR-BA0051F6",
+    "restaurantId": "RST-AEEC52FD",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-F3CEF540",
+        "menuItemName": "Beef Tehari",
+        "unitPrice": 200.0,
+        "quantity": 1,
+        "selectedAddons": [
+          {
+            "id": "ADD-3C0F1FF6",
+            "name": "Extra Achar",
+            "extraPrice": 10.0,
+            "available": true
+          }
+        ],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "CONFIRMED",
+    "deliveryAddress": {
+      "street": "IUT",
+      "area": "Board Bazar",
+      "city": "Gazipur",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-52536413",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 210.0,
+    "deliveryFee": 150.0,
+    "discount": 0.0,
+    "totalAmount": 360.0,
+    "createdAt": "2026-03-27T21:46:21.6907871",
+    "updatedAt": "2026-03-27T21:46:52.7887562",
+    "statusHistory": {
+      "PLACED": "2026-03-27T21:46:21.6907871",
+      "CONFIRMED": "2026-03-27T21:46:52.7887562"
+    }
+  }
+}

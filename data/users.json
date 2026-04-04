@@ -1,0 +1,70 @@
+{
+  "USR-FAD65980": {
+    "id": "USR-FAD65980",
+    "name": "Farhan Islam",
+    "email": "farhan@example.com",
+    "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "phone": "01711000004",
+    "role": "RIDER",
+    "active": true,
+    "createdAt": "2026-03-27T21:28:28.1067976"
+  },
+  "USR-F33420FC": {
+    "id": "USR-F33420FC",
+    "name": "Rahim Uddin",
+    "email": "rahim@example.com",
+    "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "phone": "01711000001",
+    "role": "CUSTOMER",
+    "defaultAddress": {
+      "street": "12 Dhanmondi Lake Road",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "1205",
+      "latitude": 23.7461,
+      "longitude": 90.3742
+    },
+    "active": true,
+    "createdAt": "2026-03-27T21:28:28.0318494"
+  },
+  "USR-374EBB3E": {
+    "id": "USR-374EBB3E",
+    "name": "Nasrin Akter",
+    "email": "nasrin@example.com",
+    "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "phone": "01711000003",
+    "role": "RESTAURANT_OWNER",
+    "active": true,
+    "createdAt": "2026-03-27T21:28:28.0998153"
+  },
+  "USR-8FC8F544": {
+    "id": "USR-8FC8F544",
+    "name": "abcd",
+    "email": "abcd@gmail.com",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "phone": "01600000000",
+    "role": "RESTAURANT_OWNER",
+    "active": true,
+    "createdAt": "2026-03-27T21:47:59.9064202"
+  },
+  "USR-BA0051F6": {
+    "id": "USR-BA0051F6",
+    "name": "Ayman Nondiny",
+    "email": "nondiny@gmail.com",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "phone": "0170000000",
+    "role": "CUSTOMER",
+    "active": true,
+    "createdAt": "2026-03-27T21:29:09.8335198"
+  },
+  "USR-E8D659B4": {
+    "id": "USR-E8D659B4",
+    "name": "Kamal Hossain",
+    "email": "kamal@example.com",
+    "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "phone": "01711000002",
+    "role": "RESTAURANT_OWNER",
+    "active": true,
+    "createdAt": "2026-03-27T21:28:28.0933533"
+  }
+}

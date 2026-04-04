@@ -1,0 +1,11 @@
+{
+  "PAY-22C8D75C": {
+    "id": "PAY-22C8D75C",
+    "orderId": "ORD-0A6CD34B",
+    "method": "CASH_ON_DELIVERY",
+    "amount": 360.0,
+    "status": "PENDING",
+    "transactionId": "COD-ORD-0A6CD34B",
+    "timestamp": "2026-03-27T21:46:21.7202893"
+  }
+}
