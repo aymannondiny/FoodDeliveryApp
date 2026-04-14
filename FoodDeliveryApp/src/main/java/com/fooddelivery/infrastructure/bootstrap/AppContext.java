@@ -12,6 +12,11 @@ import com.fooddelivery.application.cart.UpdateCartItemQuantityUseCase;
 import com.fooddelivery.application.common.EmailValidator;
 import com.fooddelivery.application.common.IdGenerator;
 import com.fooddelivery.application.common.PasswordHasher;
+import com.fooddelivery.application.coupon.CouponCommandService;
+import com.fooddelivery.application.coupon.CouponQueryService;
+import com.fooddelivery.application.coupon.CouponValidationUseCase;
+import com.fooddelivery.application.menu.MenuManagementService;
+import com.fooddelivery.application.menu.MenuQueryService;
 import com.fooddelivery.application.order.AdvanceOrderStatusUseCase;
 import com.fooddelivery.application.order.CancelOrderUseCase;
 import com.fooddelivery.application.order.CompleteDeliveryUseCase;
@@ -20,6 +25,9 @@ import com.fooddelivery.application.order.GetOrderByIdUseCase;
 import com.fooddelivery.application.order.GetOrderHistoryUseCase;
 import com.fooddelivery.application.order.GetRestaurantOrdersUseCase;
 import com.fooddelivery.application.order.PlaceOrderUseCase;
+import com.fooddelivery.application.restaurant.RestaurantManagementService;
+import com.fooddelivery.application.restaurant.RestaurantQueryService;
+import com.fooddelivery.application.restaurant.RestaurantRegistrationUseCase;
 import com.fooddelivery.domain.policy.OrderStatusPolicy;
 import com.fooddelivery.domain.repository.CartRepository;
 import com.fooddelivery.domain.repository.CouponRepository;
@@ -89,6 +97,17 @@ public final class AppContext {
     private final CancelOrderUseCase cancelOrderUseCase;
     private final CompleteDeliveryUseCase completeDeliveryUseCase;
 
+    private final RestaurantRegistrationUseCase restaurantRegistrationUseCase;
+    private final RestaurantQueryService restaurantQueryService;
+    private final RestaurantManagementService restaurantManagementService;
+
+    private final MenuQueryService menuQueryService;
+    private final MenuManagementService menuManagementService;
+
+    private final CouponCommandService couponCommandService;
+    private final CouponQueryService couponQueryService;
+    private final CouponValidationUseCase couponValidationUseCase;
+
     private AppContext(UserRepository userRepository,
                        RestaurantRepository restaurantRepository,
                        MenuItemRepository menuItemRepository,
@@ -121,7 +140,15 @@ public final class AppContext {
                        GetActiveRestaurantOrdersUseCase getActiveRestaurantOrdersUseCase,
                        AdvanceOrderStatusUseCase advanceOrderStatusUseCase,
                        CancelOrderUseCase cancelOrderUseCase,
-                       CompleteDeliveryUseCase completeDeliveryUseCase) {
+                       CompleteDeliveryUseCase completeDeliveryUseCase,
+                       RestaurantRegistrationUseCase restaurantRegistrationUseCase,
+                       RestaurantQueryService restaurantQueryService,
+                       RestaurantManagementService restaurantManagementService,
+                       MenuQueryService menuQueryService,
+                       MenuManagementService menuManagementService,
+                       CouponCommandService couponCommandService,
+                       CouponQueryService couponQueryService,
+                       CouponValidationUseCase couponValidationUseCase) {
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
         this.menuItemRepository = menuItemRepository;
@@ -155,6 +182,14 @@ public final class AppContext {
         this.advanceOrderStatusUseCase = advanceOrderStatusUseCase;
         this.cancelOrderUseCase = cancelOrderUseCase;
         this.completeDeliveryUseCase = completeDeliveryUseCase;
+        this.restaurantRegistrationUseCase = restaurantRegistrationUseCase;
+        this.restaurantQueryService = restaurantQueryService;
+        this.restaurantManagementService = restaurantManagementService;
+        this.menuQueryService = menuQueryService;
+        this.menuManagementService = menuManagementService;
+        this.couponCommandService = couponCommandService;
+        this.couponQueryService = couponQueryService;
+        this.couponValidationUseCase = couponValidationUseCase;
     }
 
     private static AppContext build() {
@@ -223,6 +258,25 @@ public final class AppContext {
                         orderPaymentProcessor
                 );
 
+        RestaurantRegistrationUseCase restaurantRegistrationUseCase =
+                new RestaurantRegistrationUseCase(restaurantRepository, idGenerator);
+        RestaurantQueryService restaurantQueryService =
+                new RestaurantQueryService(restaurantRepository);
+        RestaurantManagementService restaurantManagementService =
+                new RestaurantManagementService(restaurantRepository);
+
+        MenuQueryService menuQueryService =
+                new MenuQueryService(menuItemRepository);
+        MenuManagementService menuManagementService =
+                new MenuManagementService(menuItemRepository, idGenerator);
+
+        CouponCommandService couponCommandService =
+                new CouponCommandService(couponRepository, idGenerator);
+        CouponQueryService couponQueryService =
+                new CouponQueryService(couponRepository);
+        CouponValidationUseCase couponValidationUseCase =
+                new CouponValidationUseCase(couponRepository);
+
         return new AppContext(
                 userRepository,
                 restaurantRepository,
@@ -256,7 +310,15 @@ public final class AppContext {
                 getActiveRestaurantOrdersUseCase,
                 advanceOrderStatusUseCase,
                 cancelOrderUseCase,
-                completeDeliveryUseCase
+                completeDeliveryUseCase,
+                restaurantRegistrationUseCase,
+                restaurantQueryService,
+                restaurantManagementService,
+                menuQueryService,
+                menuManagementService,
+                couponCommandService,
+                couponQueryService,
+                couponValidationUseCase
         );
     }
 
@@ -394,5 +456,37 @@ public final class AppContext {
 
     public CompleteDeliveryUseCase completeDeliveryUseCase() {
         return completeDeliveryUseCase;
+    }
+
+    public RestaurantRegistrationUseCase restaurantRegistrationUseCase() {
+        return restaurantRegistrationUseCase;
+    }
+
+    public RestaurantQueryService restaurantQueryService() {
+        return restaurantQueryService;
+    }
+
+    public RestaurantManagementService restaurantManagementService() {
+        return restaurantManagementService;
+    }
+
+    public MenuQueryService menuQueryService() {
+        return menuQueryService;
+    }
+
+    public MenuManagementService menuManagementService() {
+        return menuManagementService;
+    }
+
+    public CouponCommandService couponCommandService() {
+        return couponCommandService;
+    }
+
+    public CouponQueryService couponQueryService() {
+        return couponQueryService;
+    }
+
+    public CouponValidationUseCase couponValidationUseCase() {
+        return couponValidationUseCase;
     }
 }
