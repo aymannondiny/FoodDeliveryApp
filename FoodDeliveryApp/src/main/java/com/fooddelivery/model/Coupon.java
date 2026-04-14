@@ -2,9 +2,7 @@ package com.fooddelivery.model;
 
 import java.time.LocalDate;
 
-/**
- * Discount coupon that can be applied at checkout.
- */
+
 public class Coupon {
     private String    id;
     private String    code;               // User-entered code (e.g. "WELCOME20")
@@ -29,7 +27,6 @@ public class Coupon {
         this.expiryDate         = expiryDate;
     }
 
-    /** True if the coupon may currently be used. */
     public boolean isValid() {
         return active
             && !LocalDate.now().isAfter(expiryDate)

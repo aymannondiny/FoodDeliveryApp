@@ -1,75 +1,70 @@
 package com.fooddelivery.service;
 
+import com.fooddelivery.application.auth.GetCurrentUserUseCase;
+import com.fooddelivery.application.auth.LoginUseCase;
+import com.fooddelivery.application.auth.LogoutUseCase;
+import com.fooddelivery.application.auth.RegisterUserUseCase;
+import com.fooddelivery.application.auth.request.LoginCommand;
+import com.fooddelivery.application.auth.request.RegisterUserCommand;
+import com.fooddelivery.infrastructure.bootstrap.AppContext;
 import com.fooddelivery.model.User;
-import com.fooddelivery.repository.RepositoryFactory;
-import com.fooddelivery.util.AppUtils;
 
 import java.util.Optional;
 
 /**
- * Handles user registration, login, and session management.
+ * Legacy facade kept for backward compatibility during migration.
+ * New code should prefer auth use cases from AppContext.
  */
 public class AuthService {
 
     private static AuthService instance;
-    private User currentUser; // Simple in-memory session
 
-    private AuthService() {}
+    private final RegisterUserUseCase registerUserUseCase;
+    private final LoginUseCase loginUseCase;
+    private final LogoutUseCase logoutUseCase;
+    private final GetCurrentUserUseCase getCurrentUserUseCase;
+
+    private AuthService() {
+        AppContext context = AppContext.create();
+        this.registerUserUseCase = context.registerUserUseCase();
+        this.loginUseCase = context.loginUseCase();
+        this.logoutUseCase = context.logoutUseCase();
+        this.getCurrentUserUseCase = context.getCurrentUserUseCase();
+    }
 
     public static synchronized AuthService getInstance() {
-        if (instance == null) instance = new AuthService();
+        if (instance == null) {
+            instance = new AuthService();
+        }
         return instance;
     }
 
-    /**
-     * Register a new user.
-     * @return the created User, or throws if email already exists.
-     */
     public User register(String name, String email, String password,
                          String phone, User.Role role) {
-        if (!AppUtils.isValidEmail(email))
-            throw new IllegalArgumentException("Invalid email address.");
-        if (password == null || password.length() < 6)
-            throw new IllegalArgumentException("Password must be at least 6 characters.");
-        if (RepositoryFactory.users().findByEmail(email).isPresent())
-            throw new IllegalStateException("An account with this email already exists.");
-
-        User user = new User(
-            AppUtils.generateId("USR"),
-            name, email,
-            AppUtils.hashPassword(password),
-            phone, role
-        );
-        RepositoryFactory.users().save(user.getId(), user);
-        return user;
+        return registerUserUseCase.execute(
+                new RegisterUserCommand(name, email, password, phone, role)
+        ).getUser();
     }
 
-    /**
-     * Authenticate a user by email + password.
-     * Sets the current session user on success.
-     */
     public User login(String email, String password) {
-        User user = RepositoryFactory.users()
-                        .findByEmail(email)
-                        .orElseThrow(() -> new IllegalArgumentException("No account found for: " + email));
-
-        if (!user.getPasswordHash().equals(AppUtils.hashPassword(password)))
-            throw new IllegalArgumentException("Incorrect password.");
-        if (!user.isActive())
-            throw new IllegalStateException("This account has been deactivated.");
-
-        this.currentUser = user;
-        return user;
+        return loginUseCase.execute(
+                new LoginCommand(email, password)
+        ).getUser();
     }
 
-    public void logout() { this.currentUser = null; }
+    public void logout() {
+        logoutUseCase.execute();
+    }
 
-    public Optional<User> getCurrentUser() { return Optional.ofNullable(currentUser); }
+    public Optional<User> getCurrentUser() {
+        return getCurrentUserUseCase.execute();
+    }
 
     public User requireCurrentUser() {
-        return getCurrentUser().orElseThrow(() ->
-            new IllegalStateException("Not logged in."));
+        return getCurrentUserUseCase.requireCurrentUser();
     }
 
-    public boolean isLoggedIn() { return currentUser != null; }
+    public boolean isLoggedIn() {
+        return getCurrentUserUseCase.isLoggedIn();
+    }
 }

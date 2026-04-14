@@ -7,29 +7,37 @@ import com.google.gson.reflect.TypeToken;
 import java.util.List;
 import java.util.Map;
 
-public class OrderRepository extends FileRepository<Order> {
+public class OrderRepository extends FileRepository<Order>
+        implements com.fooddelivery.domain.repository.OrderRepository {
+
     private static OrderRepository instance;
 
     private OrderRepository() {
-        super("data/orders.json", new TypeToken<Map<String, Order>>(){}.getType());
+        super("data/orders.json", new TypeToken<Map<String, Order>>() {}.getType());
     }
 
     public static synchronized OrderRepository getInstance() {
-        if (instance == null) instance = new OrderRepository();
+        if (instance == null) {
+            instance = new OrderRepository();
+        }
         return instance;
     }
 
+    @Override
     public List<Order> findByCustomer(String customerId) {
-        return findWhere(o -> customerId.equals(o.getCustomerId()));
+        return findWhere(order -> customerId.equals(order.getCustomerId()));
     }
 
+    @Override
     public List<Order> findByRestaurant(String restaurantId) {
-        return findWhere(o -> restaurantId.equals(o.getRestaurantId()));
+        return findWhere(order -> restaurantId.equals(order.getRestaurantId()));
     }
 
+    @Override
     public List<Order> findActiveByRestaurant(String restaurantId) {
-        return findWhere(o -> restaurantId.equals(o.getRestaurantId())
-                           && o.getStatus() != OrderStatus.DELIVERED
-                           && o.getStatus() != OrderStatus.CANCELLED);
+        return findWhere(order ->
+                restaurantId.equals(order.getRestaurantId())
+                        && order.getStatus() != OrderStatus.DELIVERED
+                        && order.getStatus() != OrderStatus.CANCELLED);
     }
 }

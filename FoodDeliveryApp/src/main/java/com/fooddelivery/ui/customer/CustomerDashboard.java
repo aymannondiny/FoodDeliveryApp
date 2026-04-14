@@ -46,8 +46,8 @@ public class CustomerDashboard extends JPanel {
 
         JButton logoutBtn = UITheme.secondaryButton("Logout");
         logoutBtn.addActionListener(e -> {
-            AuthService.getInstance().logout();
             CartService.getInstance().clear();
+            AuthService.getInstance().logout();
             onLogout.run();
         });
 

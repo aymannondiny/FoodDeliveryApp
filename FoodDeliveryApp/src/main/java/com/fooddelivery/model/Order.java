@@ -6,10 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Represents a customer's food order from creation to delivery.
- * Maintains a full status-change history for tracking.
- */
+
+ // Represents a customer's food order from creation to delivery.
+ // Maintains a full status-change history for tracking.
+
 public class Order {
 
     public enum PaymentMethod { CASH_ON_DELIVERY, BKASH, NAGAD, CARD }
@@ -54,13 +54,13 @@ public class Order {
         this.paymentMethod  = paymentMethod;
     }
 
-    /** Recalculate totals from items + fee - discount. */
+    // Recalculate totals from items + fee - discount.
     public void recalculateTotals() {
         this.subtotal    = items.stream().mapToDouble(OrderItem::getLineTotal).sum();
         this.totalAmount = subtotal + deliveryFee - discount;
     }
 
-    /** Progress the order to the next status and record the timestamp. */
+    // Progress the order to the next status and record the timestamp.
     public void advanceStatus(OrderStatus newStatus) {
         this.status    = newStatus;
         this.updatedAt = LocalDateTime.now();

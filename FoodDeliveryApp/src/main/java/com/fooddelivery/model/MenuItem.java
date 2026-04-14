@@ -36,12 +36,11 @@ public class MenuItem {
         this.price        = price;
     }
 
-    /** Returns true if this item can still be ordered (available and has stock). */
     public boolean isOrderable() {
         return available && (quantity == -1 || quantity > 0);
     }
 
-    /** Decrements stock if quantity-tracked; no-op if unlimited. */
+    // Decrements stock if quantity-tracked; no-op if unlimited.
     public void decrementQuantity(int amount) {
         if (quantity != -1) quantity = Math.max(0, quantity - amount);
     }

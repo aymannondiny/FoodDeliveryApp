@@ -8,11 +8,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.EnumSet;
 
-/**
- * Seeds the JSON data files with sample restaurants, menus, users,
- * riders, and coupons for demonstration purposes.
- * Only runs once – skipped if data already exists.
- */
+
 public class DataSeeder {
 
     public static void seed() {
