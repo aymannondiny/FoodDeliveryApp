@@ -1,5 +1,15 @@
 package com.fooddelivery.api;
 
+import com.fooddelivery.api.coupon.*;
+import com.fooddelivery.api.menu.*;
+import com.fooddelivery.api.order.*;
+import com.fooddelivery.api.restaurant.*;
+import com.fooddelivery.api.tracking.*;
+import com.fooddelivery.service.CouponService;
+import com.fooddelivery.service.MenuService;
+import com.fooddelivery.service.OrderService;
+import com.fooddelivery.service.RestaurantService;
+import com.fooddelivery.service.RiderService;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -8,30 +18,64 @@ import java.util.concurrent.Executors;
 
 /**
  * Lightweight embedded HTTP server exposing the food delivery REST API.
- *
- * Endpoints:
- *   GET /api/restaurants?area=&cuisine=&search=   – Restaurant discovery
- *   GET /api/menu?restaurantId=                   – Menu for a restaurant
- *   GET /api/order?orderId=                        – Full order details
- *   GET /api/track?orderId=                        – Live order tracking
- *   GET /api/cuisines                             – All cuisine types
- *   GET /api/coupon?code=&subtotal=               – Coupon validation
  */
 public class ApiServer {
 
     private static final int PORT = 8080;
+
     private HttpServer server;
 
     public void start() throws IOException {
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        server.createContext("/api/restaurants", new RestaurantsHandler());
-        server.createContext("/api/menu",        new MenuHandler());
-        server.createContext("/api/order",       new OrderHandler());
-        server.createContext("/api/track",       new TrackHandler());
-        server.createContext("/api/cuisines",    new CuisinesHandler());
-        server.createContext("/api/coupon",      new CouponHandler());
+
+        RestaurantReader restaurantReader =
+                new DefaultRestaurantReader(RestaurantService.getInstance());
+
+        MenuReader menuReader =
+                new DefaultMenuReader(MenuService.getInstance());
+
+        OrderReader orderReader =
+                new DefaultOrderReader(OrderService.getInstance());
+
+        TrackingReader trackingReader =
+                new DefaultTrackingReader(OrderService.getInstance(), RiderService.getInstance());
+
+        CouponValidator couponValidator =
+                new DefaultCouponValidator(CouponService.getInstance());
+
+        server.createContext(
+                "/api/restaurants",
+                new RestaurantsHandler(restaurantReader, new RestaurantResponseMapper())
+        );
+
+        server.createContext(
+                "/api/menu",
+                new MenuHandler(menuReader, new MenuResponseMapper())
+        );
+
+        server.createContext(
+                "/api/order",
+                new OrderHandler(orderReader, new OrderResponseMapper())
+        );
+
+        server.createContext(
+                "/api/track",
+                new TrackHandler(trackingReader, new TrackingResponseMapper())
+        );
+
+        server.createContext(
+                "/api/cuisines",
+                new CuisinesHandler(restaurantReader)
+        );
+
+        server.createContext(
+                "/api/coupon",
+                new CouponHandler(couponValidator, new CouponResponseMapper())
+        );
+
         server.setExecutor(Executors.newFixedThreadPool(4));
         server.start();
+
         System.out.println("╔══════════════════════════════════════════════════╗");
         System.out.println("║  API Server running on http://localhost:" + PORT + "     ║");
         System.out.println("╠══════════════════════════════════════════════════╣");
@@ -45,6 +89,8 @@ public class ApiServer {
     }
 
     public void stop() {
-        if (server != null) server.stop(0);
+        if (server != null) {
+            server.stop(0);
+        }
     }
 }
