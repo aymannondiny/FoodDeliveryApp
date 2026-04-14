@@ -7,6 +7,8 @@ import com.fooddelivery.ui.LoginRegisterPanel;
 import com.fooddelivery.ui.UITheme;
 import com.fooddelivery.ui.auth.AuthController;
 import com.fooddelivery.ui.customer.CustomerDashboard;
+import com.fooddelivery.ui.customer.menu.MenuController;
+import com.fooddelivery.ui.customer.restaurants.RestaurantListController;
 import com.fooddelivery.ui.restaurant.RestaurantDashboard;
 import com.fooddelivery.ui.restaurant.RiderDashboard;
 import com.fooddelivery.util.DataSeeder;
@@ -86,11 +88,35 @@ public class Main {
 
     private static JPanel buildDashboard(User user) {
         return switch (user.getRole()) {
-            case CUSTOMER -> new CustomerDashboard(user, Main::showLoginScreen);
+            case CUSTOMER -> new CustomerDashboard(
+                    user,
+                    Main::showLoginScreen,
+                    createRestaurantListController(),
+                    createMenuController()
+            );
             case RESTAURANT_OWNER -> new RestaurantDashboard(user, Main::showLoginScreen);
             case RIDER -> new RiderDashboard(user, Main::showLoginScreen);
-            case ADMIN -> new CustomerDashboard(user, Main::showLoginScreen);
+            case ADMIN -> new CustomerDashboard(
+                    user,
+                    Main::showLoginScreen,
+                    createRestaurantListController(),
+                    createMenuController()
+            );
         };
+    }
+
+    private static RestaurantListController createRestaurantListController() {
+        AppContext context = AppContext.create();
+        return new RestaurantListController(context.restaurantQueryService());
+    }
+
+    private static MenuController createMenuController() {
+        AppContext context = AppContext.create();
+        return new MenuController(
+                context.menuQueryService(),
+                context.getCartUseCase(),
+                context.addCartItemUseCase()
+        );
     }
 
     private static JFrame buildFrame() {
