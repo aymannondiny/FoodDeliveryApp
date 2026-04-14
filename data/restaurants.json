@@ -1,4 +1,26 @@
 {
+  "RST-47240502": {
+    "id": "RST-47240502",
+    "ownerId": "USR-847ACA92",
+    "name": "TasteBuds",
+    "cuisineType": "Italiano",
+    "address": {
+      "street": "Road 2",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "rating": 0.0,
+    "totalRatings": 0,
+    "isOpen": true,
+    "deliveryFeePerKm": 15.0,
+    "minOrderAmount": 200.0,
+    "estimatedDeliveryMinutes": 50,
+    "phoneNumber": "01800000000",
+    "approved": true
+  },
   "RST-AEEC52FD": {
     "id": "RST-AEEC52FD",
     "ownerId": "USR-E8D659B4",

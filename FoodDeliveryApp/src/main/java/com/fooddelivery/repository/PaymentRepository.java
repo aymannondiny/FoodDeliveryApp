@@ -6,19 +6,26 @@ import com.google.gson.reflect.TypeToken;
 import java.util.Map;
 import java.util.Optional;
 
-public class PaymentRepository extends FileRepository<Payment> {
+public class PaymentRepository extends FileRepository<Payment>
+        implements com.fooddelivery.domain.repository.PaymentRepository {
+
     private static PaymentRepository instance;
 
     private PaymentRepository() {
-        super("data/payments.json", new TypeToken<Map<String, Payment>>(){}.getType());
+        super("data/payments.json", new TypeToken<Map<String, Payment>>() {}.getType());
     }
 
     public static synchronized PaymentRepository getInstance() {
-        if (instance == null) instance = new PaymentRepository();
+        if (instance == null) {
+            instance = new PaymentRepository();
+        }
         return instance;
     }
 
+    @Override
     public Optional<Payment> findByOrder(String orderId) {
-        return findWhere(p -> orderId.equals(p.getOrderId())).stream().findFirst();
+        return findWhere(payment -> orderId.equals(payment.getOrderId()))
+                .stream()
+                .findFirst();
     }
 }

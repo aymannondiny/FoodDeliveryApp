@@ -9,6 +9,16 @@
     "active": true,
     "createdAt": "2026-03-27T21:28:28.1067976"
   },
+  "USR-847ACA92": {
+    "id": "USR-847ACA92",
+    "name": "Mursalin Fahad",
+    "email": "fahad@example.com",
+    "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "phone": "01700000000",
+    "role": "RESTAURANT_OWNER",
+    "active": true,
+    "createdAt": "2026-04-14T20:13:13.1134412"
+  },
   "USR-F33420FC": {
     "id": "USR-F33420FC",
     "name": "Rahim Uddin",
@@ -66,5 +76,15 @@
     "role": "RESTAURANT_OWNER",
     "active": true,
     "createdAt": "2026-03-27T21:28:28.0933533"
+  },
+  "USR-C6ECEBE0": {
+    "id": "USR-C6ECEBE0",
+    "name": "Ayman Nondiny",
+    "email": "ayman@gmail.com",
+    "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "phone": "01700000000",
+    "role": "CUSTOMER",
+    "active": true,
+    "createdAt": "2026-04-14T20:08:50.2138131"
   }
 }

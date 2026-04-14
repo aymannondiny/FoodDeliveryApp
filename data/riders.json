@@ -4,11 +4,10 @@
     "userId": "USR-FAD65980",
     "name": "Farhan Islam",
     "phone": "01711000004",
-    "available": false,
+    "available": true,
     "currentArea": "Dhanmondi",
     "vehicleType": "Bike",
     "rating": 0.0,
-    "totalDeliveries": 0,
-    "currentOrderId": "ORD-0A6CD34B"
+    "totalDeliveries": 1
   }
 }

@@ -1,9 +1,6 @@
 package com.fooddelivery.model;
 
-/**
- * An optional add-on or customisation that can be attached to a {@link MenuItem}.
- * Examples: extra cheese, spicy sauce, size upgrade.
- */
+
 public class MenuItemAddon {
     private String  id;
     private String  name;

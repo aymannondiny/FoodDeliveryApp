@@ -248,5 +248,16 @@
         "available": true
       }
     ]
+  },
+  "ITEM-DA3049F9": {
+    "id": "ITEM-DA3049F9",
+    "restaurantId": "RST-47240502",
+    "name": "Mexican Pasta",
+    "description": "Cheese, Meat, BBQ Sauce",
+    "category": "Pasta",
+    "price": 230.0,
+    "available": false,
+    "quantity": 30,
+    "addons": []
   }
 }

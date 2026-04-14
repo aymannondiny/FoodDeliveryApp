@@ -28,7 +28,7 @@ public class Address {
         this.longitude = longitude;
     }
 
-    /** Calculates approximate distance (km) to another address using Haversine formula. */
+    // Calculates approximate distance (km) to another address using Haversine formula.
     public double distanceTo(Address other) {
         if (this.latitude == 0 || other.latitude == 0) {
             // Fall back to area equality if coordinates are missing

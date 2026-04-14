@@ -219,18 +219,26 @@ public class MenuPanel extends JPanel {
             }
             CartService cart = CartService.getInstance();
             String prevRestaurant = cart.getRestaurantId();
+
             if (prevRestaurant != null && !prevRestaurant.equals(restaurant.getId())) {
                 int confirm = JOptionPane.showConfirmDialog(dialog,
-                    "Your cart contains items from another restaurant.\nClear cart and add this item?",
-                    "Clear Cart?", JOptionPane.YES_NO_OPTION);
+                        "Your cart contains items from another restaurant.\nClear cart and add this item?",
+                        "Clear Cart?", JOptionPane.YES_NO_OPTION);
                 if (confirm != JOptionPane.YES_OPTION) return;
             }
-            cart.setRestaurantName(restaurant.getName());
-            cart.addItem(item, (int) spinner.getValue(), selected, instrField.getText());
+
+            cart.addItem(
+                    item,
+                    (int) spinner.getValue(),
+                    selected,
+                    instrField.getText(),
+                    restaurant.getName()
+            );
+
             onCartChanged.accept(null);
             dialog.dispose();
             JOptionPane.showMessageDialog(this, item.getName() + " added to cart!",
-                "Added", JOptionPane.INFORMATION_MESSAGE);
+                    "Added", JOptionPane.INFORMATION_MESSAGE);
         });
 
         btnRow.add(cancel);

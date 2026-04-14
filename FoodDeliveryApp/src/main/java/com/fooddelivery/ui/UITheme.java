@@ -4,10 +4,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
-/**
- * Shared design constants for the Swing UI.
- * All colours, fonts, and common factory methods live here.
- */
+
 public final class UITheme {
 
     // ── Palette ───────────────────────────────────────────────────────────────

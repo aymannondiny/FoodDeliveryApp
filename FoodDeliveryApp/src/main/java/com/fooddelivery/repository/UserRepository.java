@@ -1,52 +1,32 @@
 package com.fooddelivery.repository;
 
-import com.fooddelivery.model.*;
+import com.fooddelivery.model.User;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  UserRepository
-// ─────────────────────────────────────────────────────────────────────────────
+public class UserRepository extends FileRepository<User>
+        implements com.fooddelivery.domain.repository.UserRepository {
 
-public class UserRepository extends FileRepository<User> {
     private static UserRepository instance;
 
     private UserRepository() {
-        super("data/users.json", new TypeToken<Map<String, User>>(){}.getType());
+        super("data/users.json", new TypeToken<Map<String, User>>() {}.getType());
     }
 
     public static synchronized UserRepository getInstance() {
-        if (instance == null) instance = new UserRepository();
+        if (instance == null) {
+            instance = new UserRepository();
+        }
         return instance;
     }
 
+    @Override
     public Optional<User> findByEmail(String email) {
-        return findWhere(u -> u.getEmail().equalsIgnoreCase(email)).stream().findFirst();
+        return findWhere(user ->
+                user.getEmail() != null && user.getEmail().equalsIgnoreCase(email))
+                .stream()
+                .findFirst();
     }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  RestaurantRepository
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  MenuItemRepository
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  OrderRepository
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  RiderRepository
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  CouponRepository
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  PaymentRepository
-// ─────────────────────────────────────────────────────────────────────────────
-

@@ -51,7 +51,7 @@ public final class AppUtils {
         return email != null && email.matches("^[\\w.+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$");
     }
 
-    //** Returns true if the string is non-null and non-blank. */
+    // Returns true if the string is non-null and non-blank. \
     public static boolean notBlank(String s) {
         return s != null && !s.isBlank();
     }
