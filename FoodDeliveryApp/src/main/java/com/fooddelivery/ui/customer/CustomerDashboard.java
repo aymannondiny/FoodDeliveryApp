@@ -4,8 +4,8 @@ import com.fooddelivery.model.Order;
 import com.fooddelivery.model.Restaurant;
 import com.fooddelivery.model.User;
 import com.fooddelivery.service.AuthService;
-import com.fooddelivery.service.CartService;
 import com.fooddelivery.ui.UITheme;
+import com.fooddelivery.ui.customer.cart.CartController;
 import com.fooddelivery.ui.customer.menu.MenuController;
 import com.fooddelivery.ui.customer.restaurants.RestaurantListController;
 
@@ -23,6 +23,7 @@ public class CustomerDashboard extends JPanel {
     private final Runnable onLogout;
     private final RestaurantListController restaurantListController;
     private final MenuController menuController;
+    private final CartController cartController;
 
     private JTabbedPane tabs;
     private CartPanel cartPanel;
@@ -31,11 +32,13 @@ public class CustomerDashboard extends JPanel {
     public CustomerDashboard(User currentUser,
                              Runnable onLogout,
                              RestaurantListController restaurantListController,
-                             MenuController menuController) {
+                             MenuController menuController,
+                             CartController cartController) {
         this.currentUser = currentUser;
         this.onLogout = onLogout;
         this.restaurantListController = restaurantListController;
         this.menuController = menuController;
+        this.cartController = cartController;
         setLayout(new BorderLayout());
         setBackground(UITheme.BG);
         buildUI();
@@ -52,7 +55,6 @@ public class CustomerDashboard extends JPanel {
 
         JButton logoutBtn = UITheme.secondaryButton("Logout");
         logoutBtn.addActionListener(e -> {
-            CartService.getInstance().clear();
             AuthService.getInstance().logout();
             onLogout.run();
         });
@@ -66,7 +68,7 @@ public class CustomerDashboard extends JPanel {
 
         tabs.addTab("🏪 Restaurants", createRestaurantListPanel());
 
-        cartPanel = new CartPanel(this::onOrderPlaced);
+        cartPanel = new CartPanel(cartController, this::onOrderPlaced);
         tabs.addTab("🛒 Cart", cartPanel);
 
         historyPanel = new OrderHistoryPanel(currentUser.getId());
@@ -95,7 +97,6 @@ public class CustomerDashboard extends JPanel {
     }
 
     private void onOrderPlaced(Order order) {
-        CartService.getInstance().clear();
         updateCartBadge();
         tabs.setSelectedIndex(2);
         historyPanel.refresh();
@@ -110,7 +111,7 @@ public class CustomerDashboard extends JPanel {
     }
 
     private void updateCartBadge() {
-        int count = CartService.getInstance().getTotalItems();
+        int count = cartController.loadCartView().getTotalItems();
         tabs.setTitleAt(1, "🛒 Cart (" + count + ")");
         cartPanel.refresh();
     }

@@ -7,6 +7,7 @@ import com.fooddelivery.ui.LoginRegisterPanel;
 import com.fooddelivery.ui.UITheme;
 import com.fooddelivery.ui.auth.AuthController;
 import com.fooddelivery.ui.customer.CustomerDashboard;
+import com.fooddelivery.ui.customer.cart.CartController;
 import com.fooddelivery.ui.customer.menu.MenuController;
 import com.fooddelivery.ui.customer.restaurants.RestaurantListController;
 import com.fooddelivery.ui.restaurant.RestaurantDashboard;
@@ -92,7 +93,8 @@ public class Main {
                     user,
                     Main::showLoginScreen,
                     createRestaurantListController(),
-                    createMenuController()
+                    createMenuController(),
+                    createCartController()
             );
             case RESTAURANT_OWNER -> new RestaurantDashboard(user, Main::showLoginScreen);
             case RIDER -> new RiderDashboard(user, Main::showLoginScreen);
@@ -100,7 +102,8 @@ public class Main {
                     user,
                     Main::showLoginScreen,
                     createRestaurantListController(),
-                    createMenuController()
+                    createMenuController(),
+                    createCartController()
             );
         };
     }
@@ -116,6 +119,19 @@ public class Main {
                 context.menuQueryService(),
                 context.getCartUseCase(),
                 context.addCartItemUseCase()
+        );
+    }
+
+    private static CartController createCartController() {
+        AppContext context = AppContext.create();
+        return new CartController(
+                context.getCartUseCase(),
+                context.updateCartItemQuantityUseCase(),
+                context.removeCartItemUseCase(),
+                context.couponValidationUseCase(),
+                context.getCurrentUserUseCase(),
+                context.restaurantQueryService(),
+                context.placeOrderUseCase()
         );
     }
 
