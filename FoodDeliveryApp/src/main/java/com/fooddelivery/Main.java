@@ -9,6 +9,7 @@ import com.fooddelivery.ui.auth.AuthController;
 import com.fooddelivery.ui.customer.CustomerDashboard;
 import com.fooddelivery.ui.customer.cart.CartController;
 import com.fooddelivery.ui.customer.menu.MenuController;
+import com.fooddelivery.ui.customer.orders.OrderHistoryController;
 import com.fooddelivery.ui.customer.restaurants.RestaurantListController;
 import com.fooddelivery.ui.restaurant.RestaurantDashboard;
 import com.fooddelivery.ui.restaurant.RiderDashboard;
@@ -20,11 +21,6 @@ import java.io.IOException;
 
 /**
  * Application entry point.
- *
- * Responsibilities:
- *  1. Seed demo data on first run
- *  2. Start the REST API server on port 8080
- *  3. Launch the Swing UI (auto-routes by user role after login)
  */
 public class Main {
 
@@ -94,7 +90,8 @@ public class Main {
                     Main::showLoginScreen,
                     createRestaurantListController(),
                     createMenuController(),
-                    createCartController()
+                    createCartController(),
+                    createOrderHistoryController()
             );
             case RESTAURANT_OWNER -> new RestaurantDashboard(user, Main::showLoginScreen);
             case RIDER -> new RiderDashboard(user, Main::showLoginScreen);
@@ -103,7 +100,8 @@ public class Main {
                     Main::showLoginScreen,
                     createRestaurantListController(),
                     createMenuController(),
-                    createCartController()
+                    createCartController(),
+                    createOrderHistoryController()
             );
         };
     }
@@ -132,6 +130,19 @@ public class Main {
                 context.getCurrentUserUseCase(),
                 context.restaurantQueryService(),
                 context.placeOrderUseCase()
+        );
+    }
+
+    private static OrderHistoryController createOrderHistoryController() {
+        AppContext context = AppContext.create();
+        return new OrderHistoryController(
+                context.getOrderHistoryUseCase(),
+                context.cancelOrderUseCase(),
+                context.getOrderByIdUseCase(),
+                context.advanceOrderStatusUseCase(),
+                context.completeDeliveryUseCase(),
+                context.findRiderByIdUseCase(),
+                context.getPaymentForOrderUseCase()
         );
     }
 

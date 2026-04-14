@@ -4,9 +4,11 @@ import com.fooddelivery.model.Order;
 import com.fooddelivery.model.Restaurant;
 import com.fooddelivery.model.User;
 import com.fooddelivery.service.AuthService;
+import com.fooddelivery.service.CartService;
 import com.fooddelivery.ui.UITheme;
 import com.fooddelivery.ui.customer.cart.CartController;
 import com.fooddelivery.ui.customer.menu.MenuController;
+import com.fooddelivery.ui.customer.orders.OrderHistoryController;
 import com.fooddelivery.ui.customer.restaurants.RestaurantListController;
 
 import javax.swing.*;
@@ -24,6 +26,7 @@ public class CustomerDashboard extends JPanel {
     private final RestaurantListController restaurantListController;
     private final MenuController menuController;
     private final CartController cartController;
+    private final OrderHistoryController orderHistoryController;
 
     private JTabbedPane tabs;
     private CartPanel cartPanel;
@@ -33,12 +36,14 @@ public class CustomerDashboard extends JPanel {
                              Runnable onLogout,
                              RestaurantListController restaurantListController,
                              MenuController menuController,
-                             CartController cartController) {
+                             CartController cartController,
+                             OrderHistoryController orderHistoryController) {
         this.currentUser = currentUser;
         this.onLogout = onLogout;
         this.restaurantListController = restaurantListController;
         this.menuController = menuController;
         this.cartController = cartController;
+        this.orderHistoryController = orderHistoryController;
         setLayout(new BorderLayout());
         setBackground(UITheme.BG);
         buildUI();
@@ -55,6 +60,7 @@ public class CustomerDashboard extends JPanel {
 
         JButton logoutBtn = UITheme.secondaryButton("Logout");
         logoutBtn.addActionListener(e -> {
+            CartService.getInstance().clear();
             AuthService.getInstance().logout();
             onLogout.run();
         });
@@ -71,7 +77,7 @@ public class CustomerDashboard extends JPanel {
         cartPanel = new CartPanel(cartController, this::onOrderPlaced);
         tabs.addTab("🛒 Cart", cartPanel);
 
-        historyPanel = new OrderHistoryPanel(currentUser.getId());
+        historyPanel = new OrderHistoryPanel(orderHistoryController, currentUser.getId());
         tabs.addTab("📋 My Orders", historyPanel);
 
         add(tabs, BorderLayout.CENTER);
