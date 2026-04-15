@@ -1,21 +1,21 @@
 package com.fooddelivery.api.coupon;
 
 import com.fooddelivery.api.common.BadRequestException;
+import com.fooddelivery.application.coupon.CouponValidationUseCase;
 import com.fooddelivery.model.Coupon;
-import com.fooddelivery.service.CouponService;
 
 public class DefaultCouponValidator implements CouponValidator {
 
-    private final CouponService couponService;
+    private final CouponValidationUseCase couponValidationUseCase;
 
-    public DefaultCouponValidator(CouponService couponService) {
-        this.couponService = couponService;
+    public DefaultCouponValidator(CouponValidationUseCase couponValidationUseCase) {
+        this.couponValidationUseCase = couponValidationUseCase;
     }
 
     @Override
     public CouponValidationResult validate(String code, double subtotal) {
         try {
-            Coupon coupon = couponService.validateCoupon(code, subtotal);
+            Coupon coupon = couponValidationUseCase.execute(code, subtotal);
             double discount = coupon.calculateDiscount(subtotal);
 
             return new CouponValidationResult(

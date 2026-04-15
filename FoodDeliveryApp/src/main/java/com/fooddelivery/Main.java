@@ -13,6 +13,7 @@ import com.fooddelivery.ui.customer.orders.OrderHistoryController;
 import com.fooddelivery.ui.customer.restaurants.RestaurantListController;
 import com.fooddelivery.ui.restaurant.RestaurantDashboard;
 import com.fooddelivery.ui.restaurant.RiderDashboard;
+import com.fooddelivery.ui.restaurant.dashboard.RestaurantDashboardController;
 import com.fooddelivery.util.DataSeeder;
 
 import javax.swing.*;
@@ -93,7 +94,11 @@ public class Main {
                     createCartController(),
                     createOrderHistoryController()
             );
-            case RESTAURANT_OWNER -> new RestaurantDashboard(user, Main::showLoginScreen);
+            case RESTAURANT_OWNER -> new RestaurantDashboard(
+                    user,
+                    Main::showLoginScreen,
+                    createRestaurantDashboardController()
+            );
             case RIDER -> new RiderDashboard(user, Main::showLoginScreen);
             case ADMIN -> new CustomerDashboard(
                     user,
@@ -143,6 +148,22 @@ public class Main {
                 context.completeDeliveryUseCase(),
                 context.findRiderByIdUseCase(),
                 context.getPaymentForOrderUseCase()
+        );
+    }
+
+    private static RestaurantDashboardController createRestaurantDashboardController() {
+        AppContext context = AppContext.create();
+        return new RestaurantDashboardController(
+                context.logoutUseCase(),
+                context.restaurantRegistrationUseCase(),
+                context.restaurantQueryService(),
+                context.restaurantManagementService(),
+                context.menuQueryService(),
+                context.menuManagementService(),
+                context.getActiveRestaurantOrdersUseCase(),
+                context.advanceOrderStatusUseCase(),
+                context.cancelOrderUseCase(),
+                context.completeDeliveryUseCase()
         );
     }
 

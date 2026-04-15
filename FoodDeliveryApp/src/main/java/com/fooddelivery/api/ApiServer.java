@@ -1,15 +1,26 @@
 package com.fooddelivery.api;
 
-import com.fooddelivery.api.coupon.*;
-import com.fooddelivery.api.menu.*;
-import com.fooddelivery.api.order.*;
-import com.fooddelivery.api.restaurant.*;
-import com.fooddelivery.api.tracking.*;
-import com.fooddelivery.service.CouponService;
-import com.fooddelivery.service.MenuService;
-import com.fooddelivery.service.OrderService;
-import com.fooddelivery.service.RestaurantService;
-import com.fooddelivery.service.RiderService;
+import com.fooddelivery.api.coupon.CouponHandler;
+import com.fooddelivery.api.coupon.CouponResponseMapper;
+import com.fooddelivery.api.coupon.CouponValidator;
+import com.fooddelivery.api.coupon.DefaultCouponValidator;
+import com.fooddelivery.api.menu.DefaultMenuReader;
+import com.fooddelivery.api.menu.MenuHandler;
+import com.fooddelivery.api.menu.MenuReader;
+import com.fooddelivery.api.menu.MenuResponseMapper;
+import com.fooddelivery.api.order.DefaultOrderReader;
+import com.fooddelivery.api.order.OrderHandler;
+import com.fooddelivery.api.order.OrderReader;
+import com.fooddelivery.api.restaurant.CuisinesHandler;
+import com.fooddelivery.api.restaurant.DefaultRestaurantReader;
+import com.fooddelivery.api.restaurant.RestaurantReader;
+import com.fooddelivery.api.restaurant.RestaurantResponseMapper;
+import com.fooddelivery.api.restaurant.RestaurantsHandler;
+import com.fooddelivery.api.tracking.DefaultTrackingReader;
+import com.fooddelivery.api.tracking.TrackHandler;
+import com.fooddelivery.api.tracking.TrackingReader;
+import com.fooddelivery.api.tracking.TrackingResponseMapper;
+import com.fooddelivery.infrastructure.bootstrap.AppContext;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -28,20 +39,25 @@ public class ApiServer {
     public void start() throws IOException {
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
 
+        AppContext context = AppContext.create();
+
         RestaurantReader restaurantReader =
-                new DefaultRestaurantReader(RestaurantService.getInstance());
+                new DefaultRestaurantReader(context.restaurantQueryService());
 
         MenuReader menuReader =
-                new DefaultMenuReader(MenuService.getInstance());
+                new DefaultMenuReader(context.menuQueryService());
 
         OrderReader orderReader =
-                new DefaultOrderReader(OrderService.getInstance());
+                new DefaultOrderReader(context.getOrderByIdUseCase());
 
         TrackingReader trackingReader =
-                new DefaultTrackingReader(OrderService.getInstance(), RiderService.getInstance());
+                new DefaultTrackingReader(
+                        context.getOrderByIdUseCase(),
+                        context.findRiderByIdUseCase()
+                );
 
         CouponValidator couponValidator =
-                new DefaultCouponValidator(CouponService.getInstance());
+                new DefaultCouponValidator(context.couponValidationUseCase());
 
         server.createContext(
                 "/api/restaurants",
@@ -55,7 +71,7 @@ public class ApiServer {
 
         server.createContext(
                 "/api/order",
-                new OrderHandler(orderReader, new OrderResponseMapper())
+                new OrderHandler(orderReader, new com.fooddelivery.api.order.OrderResponseMapper())
         );
 
         server.createContext(

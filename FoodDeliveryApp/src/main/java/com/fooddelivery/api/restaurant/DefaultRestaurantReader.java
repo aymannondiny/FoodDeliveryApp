@@ -1,43 +1,42 @@
 package com.fooddelivery.api.restaurant;
 
+import com.fooddelivery.application.restaurant.RestaurantQueryService;
 import com.fooddelivery.model.Address;
 import com.fooddelivery.model.Restaurant;
-import com.fooddelivery.service.RestaurantService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DefaultRestaurantReader implements RestaurantReader {
 
-    private final RestaurantService restaurantService;
+    private final RestaurantQueryService restaurantQueryService;
 
-    public DefaultRestaurantReader(RestaurantService restaurantService) {
-        this.restaurantService = restaurantService;
+    public DefaultRestaurantReader(RestaurantQueryService restaurantQueryService) {
+        this.restaurantQueryService = restaurantQueryService;
     }
 
     @Override
     public List<Restaurant> findByCriteria(RestaurantSearchCriteria criteria) {
         if (criteria.hasArea()) {
             Address address = new Address("", criteria.getArea(), "Dhaka", "");
-            return restaurantService.findNearby(address, 50);
+            return restaurantQueryService.findNearby(address, 50);
         }
 
         if (criteria.hasCuisine()) {
-            return restaurantService.filterByCuisine(criteria.getCuisine());
+            return restaurantQueryService.filterByCuisine(criteria.getCuisine());
         }
 
         if (criteria.hasSearch()) {
-            return restaurantService.search(criteria.getSearch());
+            return restaurantQueryService.search(criteria.getSearch());
         }
 
-        // endpoint comment says "approved restaurants"
-        return restaurantService.getAll().stream()
+        return restaurantQueryService.getAll().stream()
                 .filter(Restaurant::isApproved)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<String> getAllCuisineTypes() {
-        return restaurantService.getAllCuisineTypes();
+        return restaurantQueryService.getAllCuisineTypes();
     }
 }

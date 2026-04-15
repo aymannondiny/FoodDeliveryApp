@@ -1,25 +1,26 @@
 package com.fooddelivery.api.tracking;
 
+import com.fooddelivery.application.order.GetOrderByIdUseCase;
+import com.fooddelivery.application.rider.FindRiderByIdUseCase;
 import com.fooddelivery.model.Order;
 import com.fooddelivery.model.Rider;
-import com.fooddelivery.service.OrderService;
-import com.fooddelivery.service.RiderService;
 
 import java.util.Optional;
 
 public class DefaultTrackingReader implements TrackingReader {
 
-    private final OrderService orderService;
-    private final RiderService riderService;
+    private final GetOrderByIdUseCase getOrderByIdUseCase;
+    private final FindRiderByIdUseCase findRiderByIdUseCase;
 
-    public DefaultTrackingReader(OrderService orderService, RiderService riderService) {
-        this.orderService = orderService;
-        this.riderService = riderService;
+    public DefaultTrackingReader(GetOrderByIdUseCase getOrderByIdUseCase,
+                                 FindRiderByIdUseCase findRiderByIdUseCase) {
+        this.getOrderByIdUseCase = getOrderByIdUseCase;
+        this.findRiderByIdUseCase = findRiderByIdUseCase;
     }
 
     @Override
     public Optional<TrackingInfo> findByOrderId(String orderId) {
-        Optional<Order> orderOpt = orderService.findById(orderId);
+        Optional<Order> orderOpt = getOrderByIdUseCase.execute(orderId);
         if (orderOpt.isEmpty()) {
             return Optional.empty();
         }
@@ -28,7 +29,7 @@ public class DefaultTrackingReader implements TrackingReader {
         TrackingInfo.RiderInfo riderInfo = null;
 
         if (order.getRiderId() != null) {
-            Rider rider = riderService.findById(order.getRiderId()).orElse(null);
+            Rider rider = findRiderByIdUseCase.execute(order.getRiderId()).orElse(null);
             if (rider != null) {
                 riderInfo = new TrackingInfo.RiderInfo(
                         rider.getName(),

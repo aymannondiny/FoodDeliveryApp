@@ -1,20 +1,20 @@
 package com.fooddelivery.api.order;
 
+import com.fooddelivery.application.order.GetOrderByIdUseCase;
 import com.fooddelivery.model.Order;
-import com.fooddelivery.service.OrderService;
 
 import java.util.Optional;
 
 public class DefaultOrderReader implements OrderReader {
 
-    private final OrderService orderService;
+    private final GetOrderByIdUseCase getOrderByIdUseCase;
 
-    public DefaultOrderReader(OrderService orderService) {
-        this.orderService = orderService;
+    public DefaultOrderReader(GetOrderByIdUseCase getOrderByIdUseCase) {
+        this.getOrderByIdUseCase = getOrderByIdUseCase;
     }
 
     @Override
     public Optional<Order> findById(String orderId) {
-        return orderService.findById(orderId);
+        return getOrderByIdUseCase.execute(orderId);
     }
 }
