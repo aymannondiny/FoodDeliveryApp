@@ -310,9 +310,9 @@ public final class AppContext {
         GetActiveRestaurantOrdersUseCase getActiveRestaurantOrdersUseCase =
                 new GetActiveRestaurantOrdersUseCase(orderRepository);
         AdvanceOrderStatusUseCase advanceOrderStatusUseCase =
-                new AdvanceOrderStatusUseCase(orderRepository, orderStatusPolicy);
+                new AdvanceOrderStatusUseCase(orderRepository, orderStatusPolicy, riderAssigner);
         CancelOrderUseCase cancelOrderUseCase =
-                new CancelOrderUseCase(orderRepository, orderStatusPolicy);
+                new CancelOrderUseCase(orderRepository, orderStatusPolicy, riderRepository);
         CompleteDeliveryUseCase completeDeliveryUseCase =
                 new CompleteDeliveryUseCase(
                         orderRepository,

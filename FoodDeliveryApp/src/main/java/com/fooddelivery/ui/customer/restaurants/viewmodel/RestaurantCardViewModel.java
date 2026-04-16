@@ -10,6 +10,7 @@ public class RestaurantCardViewModel {
     private final String ratingText;
     private final String statusText;
     private final boolean open;
+    private final String closureReason;
     private final String minOrderText;
     private final String deliveryText;
 
@@ -19,6 +20,7 @@ public class RestaurantCardViewModel {
                                    String ratingText,
                                    String statusText,
                                    boolean open,
+                                   String closureReason,
                                    String minOrderText,
                                    String deliveryText) {
         this.restaurant = restaurant;
@@ -27,6 +29,7 @@ public class RestaurantCardViewModel {
         this.ratingText = ratingText;
         this.statusText = statusText;
         this.open = open;
+        this.closureReason = closureReason;
         this.minOrderText = minOrderText;
         this.deliveryText = deliveryText;
     }
@@ -53,6 +56,14 @@ public class RestaurantCardViewModel {
 
     public boolean isOpen() {
         return open;
+    }
+
+    public String getClosureReason() {
+        return closureReason;
+    }
+
+    public boolean hasClosureReason() {
+        return closureReason != null && !closureReason.isBlank();
     }
 
     public String getMinOrderText() {

@@ -247,11 +247,13 @@ public class RestaurantDashboard extends JPanel {
 
         JButton addBtn = UITheme.primaryButton("+ Add Item");
         JButton addonBtn = UITheme.secondaryButton("+ Add-on");
+        JButton stockBtn = UITheme.secondaryButton("📦 Update Stock");
         JButton toggleBtn = UITheme.secondaryButton("Toggle Available");
         JButton deleteBtn = UITheme.dangerButton("Delete");
 
         toolbar.add(addBtn);
         toolbar.add(addonBtn);
+        toolbar.add(stockBtn);
         toolbar.add(toggleBtn);
         toolbar.add(deleteBtn);
         panel.add(toolbar, BorderLayout.NORTH);
@@ -277,6 +279,20 @@ public class RestaurantDashboard extends JPanel {
 
         addBtn.addActionListener(e -> showAddItemDialog());
         addonBtn.addActionListener(e -> showAddAddonDialog());
+
+        stockBtn.addActionListener(e -> {
+            int row = menuTable.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Select a menu item first.");
+                return;
+            }
+
+            String itemId = (String) menuModel.getValueAt(row, 0);
+            String itemName = (String) menuModel.getValueAt(row, 1);
+            String currentStock = (String) menuModel.getValueAt(row, 5).toString();
+
+            showUpdateStockDialog(itemId, itemName, currentStock);
+        });
 
         toggleBtn.addActionListener(e -> {
             int row = menuTable.getSelectedRow();
@@ -593,4 +609,99 @@ public class RestaurantDashboard extends JPanel {
             onLogout.run();
         }
     }
+
+    private void showUpdateStockDialog(String itemId, String itemName, String currentStock) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(UITheme.CARD_BG);
+
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.insets = new Insets(6, 4, 6, 4);
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1;
+
+        JLabel nameLabel = new JLabel("Item: " + itemName);
+        nameLabel.setFont(UITheme.FONT_BOLD);
+        nameLabel.setForeground(UITheme.PRIMARY);
+
+        JLabel currentLabel = new JLabel("Current stock: " + currentStock);
+        currentLabel.setFont(UITheme.FONT_BODY);
+        currentLabel.setForeground(UITheme.TEXT_MUTED);
+
+        JTextField newStockField = UITheme.textField(10);
+        newStockField.setToolTipText("Enter new stock amount (-1 = unlimited)");
+
+        JLabel hint = UITheme.mutedLabel("Use -1 for unlimited stock");
+
+        gc.gridy = 0;
+        panel.add(nameLabel, gc);
+
+        gc.gridy = 1;
+        panel.add(currentLabel, gc);
+
+        gc.gridy = 2;
+        gc.insets = new Insets(12, 4, 2, 4);
+        panel.add(new JLabel("New Stock:"), gc);
+
+        gc.gridy = 3;
+        gc.insets = new Insets(2, 4, 4, 4);
+        panel.add(newStockField, gc);
+
+        gc.gridy = 4;
+        panel.add(hint, gc);
+
+        int result = JOptionPane.showConfirmDialog(
+                this,
+                panel,
+                "Update Stock – " + itemName,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (result != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        String input = newStockField.getText().trim();
+        if (input.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a stock value.",
+                    "Missing Value",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        try {
+            int newStock = Integer.parseInt(input);
+            controller.updateStock(itemId, newStock);
+            loadMenuTable();
+
+            String message = newStock == -1
+                    ? itemName + " set to unlimited stock."
+                    : itemName + " stock updated to " + newStock + ".";
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    message,
+                    "Stock Updated",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a valid number.",
+                    "Invalid Input",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error: " + ex.getMessage(),
+                    "Update Failed",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
 }

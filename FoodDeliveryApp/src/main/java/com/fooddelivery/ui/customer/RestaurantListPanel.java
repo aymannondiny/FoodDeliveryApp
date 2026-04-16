@@ -109,10 +109,11 @@ public class RestaurantListPanel extends JPanel {
                         BorderFactory.createEmptyBorder(14, 16, 14, 16)
                 )
         ));
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, vm.hasClosureReason() ? 140 : 120));
         card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        JPanel info = new JPanel(new GridLayout(4, 1, 0, 2));
+        int infoRows = vm.hasClosureReason() ? 5 : 4;
+        JPanel info = new JPanel(new GridLayout(infoRows, 1, 0, 2));
         info.setOpaque(false);
 
         JLabel nameLabel = new JLabel(vm.getName());
@@ -133,6 +134,14 @@ public class RestaurantListPanel extends JPanel {
         info.add(subtitleLabel);
         info.add(ratingLabel);
         info.add(statusLabel);
+
+        if (vm.hasClosureReason()) {
+            JLabel reasonLabel = new JLabel("    ↳ " + vm.getClosureReason());
+            reasonLabel.setFont(UITheme.FONT_SMALL);
+            reasonLabel.setForeground(new Color(0xE67E22, false));
+            info.add(reasonLabel);
+        }
+
         card.add(info, BorderLayout.CENTER);
 
         JPanel meta = new JPanel(new GridLayout(3, 1, 0, 4));

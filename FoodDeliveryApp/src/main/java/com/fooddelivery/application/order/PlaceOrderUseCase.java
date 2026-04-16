@@ -60,6 +60,13 @@ public class PlaceOrderUseCase {
             throw new IllegalArgumentException("Restaurant is required.");
         }
 
+        if (!restaurant.isCurrentlyOpen()) {
+            String reason = getClosureReason(restaurant);
+            throw new IllegalStateException(
+                    "Sorry, " + restaurant.getName() + " is currently not accepting orders. " + reason
+            );
+        }
+
         if (cart.getSubtotal() < restaurant.getMinOrderAmount()) {
             throw new IllegalStateException(
                     String.format("Minimum order is %.2f BDT.", restaurant.getMinOrderAmount())
@@ -98,12 +105,47 @@ public class PlaceOrderUseCase {
         orderRepository.save(order.getId(), order);
 
         orderPaymentProcessor.process(order);
-        riderAssigner.assignTo(order);
 
         cart.clear();
         cartRepository.save(command.getCustomerId(), cart);
 
         return order;
+    }
+
+    private String getClosureReason(Restaurant restaurant) {
+        if (!restaurant.isApproved()) {
+            return "(Restaurant is pending approval)";
+        }
+
+        if (!restaurant.isOpen()) {
+            return "(Restaurant has paused orders)";
+        }
+
+        if (restaurant.getSchedule() != null) {
+            var schedule = restaurant.getSchedule();
+            var today = java.time.LocalDate.now().getDayOfWeek();
+
+            if (schedule.getOpenDays() != null && !schedule.getOpenDays().contains(today)) {
+                return "(Not open today)";
+            }
+
+            try {
+                var now = java.time.LocalTime.now();
+                var openTime = java.time.LocalTime.parse(schedule.getOpenTime());
+                var closeTime = java.time.LocalTime.parse(schedule.getCloseTime());
+
+                if (now.isBefore(openTime)) {
+                    return "(Opens at " + schedule.getOpenTime() + ")";
+                }
+
+                if (!now.isBefore(closeTime)) {
+                    return "(Closed for today, was open until " + schedule.getCloseTime() + ")";
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        return "";
     }
 
     private void decrementStock(MenuItem menuItem, int quantity) {

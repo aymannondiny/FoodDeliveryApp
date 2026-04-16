@@ -40,7 +40,7 @@
     "category": "Mains",
     "price": 200.0,
     "available": true,
-    "quantity": -1,
+    "quantity": 30,
     "addons": [
       {
         "id": "ADD-1B3D411E",
@@ -110,7 +110,7 @@
     "category": "Drinks",
     "price": 50.0,
     "available": true,
-    "quantity": -1,
+    "quantity": 0,
     "addons": []
   },
   "ITEM-DF1C791F": {

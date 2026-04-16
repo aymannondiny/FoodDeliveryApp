@@ -24,6 +24,8 @@ public class RiderDashboard extends JPanel {
     private final RiderDashboardController controller;
 
     private Rider rider;
+    private JTabbedPane tabs;
+    private int lastSelectedTab = 0;
 
     public RiderDashboard(User riderUser,
                           Runnable onLogout,
@@ -89,11 +91,15 @@ public class RiderDashboard extends JPanel {
         topBar.add(right, BorderLayout.EAST);
         add(topBar, BorderLayout.NORTH);
 
-        JTabbedPane tabs = new JTabbedPane();
+        tabs = new JTabbedPane();
         tabs.setFont(UITheme.FONT_BODY);
         tabs.addTab("📦 Current Assignment", buildCurrentTab());
         tabs.addTab("📋 All Deliveries", buildHistoryTab());
         tabs.addTab("📊 Stats", buildStatsTab());
+
+        if (lastSelectedTab >= 0 && lastSelectedTab < tabs.getTabCount()) {
+            tabs.setSelectedIndex(lastSelectedTab);
+        }
 
         add(tabs, BorderLayout.CENTER);
 
@@ -110,13 +116,7 @@ public class RiderDashboard extends JPanel {
         hdr.setOpaque(false);
 
         JButton refresh = UITheme.primaryButton("↻ Refresh");
-        refresh.addActionListener(e -> {
-            panel.removeAll();
-            panel.add(hdr, BorderLayout.NORTH);
-            panel.add(buildCurrentContent(), BorderLayout.CENTER);
-            panel.revalidate();
-            panel.repaint();
-        });
+        refresh.addActionListener(e -> refreshContent());
 
         hdr.add(refresh);
         panel.add(hdr, BorderLayout.NORTH);
@@ -276,6 +276,30 @@ public class RiderDashboard extends JPanel {
         panel.setBackground(UITheme.BG);
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        JPanel hdr = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        hdr.setOpaque(false);
+
+        JButton refresh = UITheme.primaryButton("↻ Refresh");
+        refresh.addActionListener(e -> refreshHistoryTab(panel));
+        hdr.add(refresh);
+
+        panel.add(hdr, BorderLayout.NORTH);
+        panel.add(buildHistoryContent(), BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    private void refreshHistoryTab(JPanel panel) {
+        if (panel.getComponentCount() > 1) {
+            panel.remove(panel.getComponent(1));
+        }
+
+        panel.add(buildHistoryContent(), BorderLayout.CENTER);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private JScrollPane buildHistoryContent() {
         List<RiderDeliveryHistoryRowViewModel> delivered = controller.loadDeliveryHistory(rider.getId());
 
         JPanel list = new JPanel();
@@ -309,11 +333,39 @@ public class RiderDashboard extends JPanel {
             }
         }
 
-        panel.add(new JScrollPane(list), BorderLayout.CENTER);
-        return panel;
+        JScrollPane scroll = new JScrollPane(list);
+        scroll.setBorder(null);
+        return scroll;
     }
 
     private JPanel buildStatsTab() {
+        JPanel outerPanel = new JPanel(new BorderLayout());
+        outerPanel.setBackground(UITheme.BG);
+
+        JPanel hdr = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        hdr.setOpaque(false);
+
+        JButton refresh = UITheme.primaryButton("↻ Refresh");
+        refresh.addActionListener(e -> refreshStatsTab(outerPanel));
+        hdr.add(refresh);
+
+        outerPanel.add(hdr, BorderLayout.NORTH);
+        outerPanel.add(buildStatsContent(), BorderLayout.CENTER);
+
+        return outerPanel;
+    }
+
+    private void refreshStatsTab(JPanel panel) {
+        if (panel.getComponentCount() > 1) {
+            panel.remove(panel.getComponent(1));
+        }
+
+        panel.add(buildStatsContent(), BorderLayout.CENTER);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private JPanel buildStatsContent() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(UITheme.BG);
 
@@ -358,6 +410,11 @@ public class RiderDashboard extends JPanel {
 
     private void refreshContent() {
         rider = controller.reloadRider(rider.getId());
+
+        if (tabs != null) {
+            lastSelectedTab = tabs.getSelectedIndex();
+        }
+
         removeAll();
         buildUI();
         revalidate();

@@ -6,6 +6,7 @@ import com.fooddelivery.application.cart.GetCartUseCase;
 import com.fooddelivery.application.cart.RemoveCartItemUseCase;
 import com.fooddelivery.application.cart.UpdateCartItemQuantityUseCase;
 import com.fooddelivery.application.coupon.CouponValidationUseCase;
+import com.fooddelivery.application.menu.MenuQueryService;
 import com.fooddelivery.application.order.PlaceOrderUseCase;
 import com.fooddelivery.application.order.request.PlaceOrderCommand;
 import com.fooddelivery.application.restaurant.RestaurantQueryService;
@@ -13,6 +14,7 @@ import com.fooddelivery.model.Address;
 import com.fooddelivery.model.Cart;
 import com.fooddelivery.model.CartItem;
 import com.fooddelivery.model.Coupon;
+import com.fooddelivery.model.MenuItem;
 import com.fooddelivery.model.Order;
 import com.fooddelivery.model.Restaurant;
 import com.fooddelivery.model.User;
@@ -21,6 +23,7 @@ import com.fooddelivery.ui.customer.cart.viewmodel.CartItemViewModel;
 import com.fooddelivery.ui.customer.cart.viewmodel.CartViewModel;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,6 +40,7 @@ public class CartController {
     private final GetCurrentUserUseCase getCurrentUserUseCase;
     private final RestaurantQueryService restaurantQueryService;
     private final PlaceOrderUseCase placeOrderUseCase;
+    private final MenuQueryService menuQueryService;
 
     public CartController(GetCartUseCase getCartUseCase,
                           UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase,
@@ -45,7 +49,8 @@ public class CartController {
                           CouponValidationUseCase couponValidationUseCase,
                           GetCurrentUserUseCase getCurrentUserUseCase,
                           RestaurantQueryService restaurantQueryService,
-                          PlaceOrderUseCase placeOrderUseCase) {
+                          PlaceOrderUseCase placeOrderUseCase,
+                          MenuQueryService menuQueryService) {
         this.getCartUseCase = getCartUseCase;
         this.updateCartItemQuantityUseCase = updateCartItemQuantityUseCase;
         this.removeCartItemUseCase = removeCartItemUseCase;
@@ -54,6 +59,7 @@ public class CartController {
         this.getCurrentUserUseCase = getCurrentUserUseCase;
         this.restaurantQueryService = restaurantQueryService;
         this.placeOrderUseCase = placeOrderUseCase;
+        this.menuQueryService = menuQueryService;
     }
 
     public CartViewModel loadCartView() {
@@ -72,7 +78,34 @@ public class CartController {
         );
     }
 
+    /**
+     * Updates quantity with stock validation.
+     * Throws IllegalStateException if new quantity exceeds available stock.
+     */
     public void updateQuantity(int index, int newQuantity) {
+        if (newQuantity <= 0) {
+            updateCartItemQuantityUseCase.execute(index, newQuantity);
+            return;
+        }
+
+        Cart cart = getCartUseCase.execute();
+        if (index < 0 || index >= cart.getItems().size()) {
+            return;
+        }
+
+        CartItem cartItem = cart.getItems().get(index);
+        int availableStock = getAvailableStock(cartItem.getMenuItemId());
+
+        if (availableStock != -1 && newQuantity > availableStock) {
+            throw new IllegalStateException(
+                    String.format(
+                            "Only %d of '%s' available in stock.",
+                            availableStock,
+                            cartItem.getMenuItemName()
+                    )
+            );
+        }
+
         updateCartItemQuantityUseCase.execute(index, newQuantity);
     }
 
@@ -136,13 +169,25 @@ public class CartController {
         );
     }
 
+    private int getAvailableStock(String menuItemId) {
+        Optional<MenuItem> itemOpt = menuQueryService.findById(menuItemId);
+        if (itemOpt.isEmpty()) {
+            return -1;
+        }
+
+        return itemOpt.get().getQuantity();
+    }
+
     private CartItemViewModel toItemViewModel(int index, CartItem item) {
+        int stock = getAvailableStock(item.getMenuItemId());
+
         return new CartItemViewModel(
                 index,
                 item.getMenuItemName(),
                 String.format("%.2f BDT each", item.getUnitPrice()),
                 item.getQuantity(),
-                String.format("%.2f BDT", item.getLineTotal())
+                String.format("%.2f BDT", item.getLineTotal()),
+                stock
         );
     }
 }

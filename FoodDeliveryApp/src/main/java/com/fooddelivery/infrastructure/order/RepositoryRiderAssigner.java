@@ -6,8 +6,13 @@ import com.fooddelivery.domain.service.RiderAssigner;
 import com.fooddelivery.model.Order;
 import com.fooddelivery.model.Rider;
 
+import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Assigns the available rider with the fewest total deliveries.
+ * This provides basic load balancing across riders.
+ */
 public class RepositoryRiderAssigner implements RiderAssigner {
 
     private final RiderRepository riderRepository;
@@ -21,17 +26,31 @@ public class RepositoryRiderAssigner implements RiderAssigner {
 
     @Override
     public void assignTo(Order order) {
+        if (order.getRiderId() != null) {
+            return;
+        }
+
         List<Rider> available = riderRepository.findAvailable();
         if (available.isEmpty()) {
             return;
         }
 
-        Rider rider = available.get(0);
-        rider.setCurrentOrderId(order.getId());
-        rider.setAvailable(false);
-        riderRepository.save(rider.getId(), rider);
+        Rider bestRider = available.stream()
+                .sorted(Comparator
+                        .comparingInt(Rider::getTotalDeliveries)
+                        .thenComparing(Rider::getId))
+                .findFirst()
+                .orElse(null);
 
-        order.setRiderId(rider.getId());
+        if (bestRider == null) {
+            return;
+        }
+
+        bestRider.setCurrentOrderId(order.getId());
+        bestRider.setAvailable(false);
+        riderRepository.save(bestRider.getId(), bestRider);
+
+        order.setRiderId(bestRider.getId());
         orderRepository.save(order.getId(), order);
     }
 }

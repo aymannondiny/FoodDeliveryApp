@@ -207,6 +207,13 @@ public class RestaurantDashboardController {
         return restaurant;
     }
 
+    public void updateStock(String menuItemId, int newQuantity) {
+        if (newQuantity < -1) {
+            throw new IllegalArgumentException("Stock must be -1 (unlimited) or a non-negative number.");
+        }
+        menuManagementService.updateQuantity(menuItemId, newQuantity);
+    }
+
     private RestaurantOrderViewModel toOrderViewModel(Order order) {
         OrderStatus next = getNextStatus(order.getStatus());
 

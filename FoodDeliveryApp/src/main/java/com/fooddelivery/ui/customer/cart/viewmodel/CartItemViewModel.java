@@ -7,17 +7,20 @@ public class CartItemViewModel {
     private final String unitPriceText;
     private final int quantity;
     private final String lineTotalText;
+    private final int availableStock;
 
     public CartItemViewModel(int index,
                              String name,
                              String unitPriceText,
                              int quantity,
-                             String lineTotalText) {
+                             String lineTotalText,
+                             int availableStock) {
         this.index = index;
         this.name = name;
         this.unitPriceText = unitPriceText;
         this.quantity = quantity;
         this.lineTotalText = lineTotalText;
+        this.availableStock = availableStock;
     }
 
     public int getIndex() {
@@ -38,5 +41,17 @@ public class CartItemViewModel {
 
     public String getLineTotalText() {
         return lineTotalText;
+    }
+
+    public int getAvailableStock() {
+        return availableStock;
+    }
+
+    public boolean isUnlimitedStock() {
+        return availableStock == -1;
+    }
+
+    public boolean isAtMaxStock() {
+        return !isUnlimitedStock() && quantity >= availableStock;
     }
 }
