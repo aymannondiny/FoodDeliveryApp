@@ -1,73 +1,67 @@
 package com.fooddelivery.service;
 
+import com.fooddelivery.application.coupon.CouponCommandService;
+import com.fooddelivery.application.coupon.CouponQueryService;
+import com.fooddelivery.application.coupon.CouponValidationUseCase;
+import com.fooddelivery.infrastructure.bootstrap.AppContext;
 import com.fooddelivery.model.Coupon;
-import com.fooddelivery.repository.RepositoryFactory;
-import com.fooddelivery.util.AppUtils;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 /**
- * Manages discount coupons: creation, validation, and discount calculation.
+ * Legacy facade kept for backward compatibility during migration.
+ * New code should prefer coupon application services from AppContext.
  */
+@Deprecated
 public class CouponService {
 
     private static CouponService instance;
 
-    private CouponService() {}
+    private final CouponCommandService commandService;
+    private final CouponQueryService queryService;
+    private final CouponValidationUseCase validationUseCase;
+
+    private CouponService() {
+        AppContext context = AppContext.create();
+        this.commandService = context.couponCommandService();
+        this.queryService = context.couponQueryService();
+        this.validationUseCase = context.couponValidationUseCase();
+    }
 
     public static synchronized CouponService getInstance() {
-        if (instance == null) instance = new CouponService();
+        if (instance == null) {
+            instance = new CouponService();
+        }
         return instance;
     }
 
     public Coupon createCoupon(String code, double discountPercent,
                                double maxDiscountAmount, double minOrderAmount,
                                LocalDate expiryDate, int usageLimit) {
-        if (RepositoryFactory.coupons().findByCode(code).isPresent())
-            throw new IllegalStateException("Coupon code '" + code + "' already exists.");
-
-        Coupon coupon = new Coupon(
-            AppUtils.generateId("CPN"), code.toUpperCase(),
-            discountPercent, maxDiscountAmount, minOrderAmount, expiryDate
+        return commandService.createCoupon(
+                code,
+                discountPercent,
+                maxDiscountAmount,
+                minOrderAmount,
+                expiryDate,
+                usageLimit
         );
-        coupon.setUsageLimit(usageLimit);
-        RepositoryFactory.coupons().save(coupon.getId(), coupon);
-        return coupon;
     }
 
-    /**
-     * Validate a coupon code against the current subtotal.
-     * @return the Coupon object if valid, otherwise throws.
-     */
     public Coupon validateCoupon(String code, double subtotal) {
-        Coupon coupon = RepositoryFactory.coupons().findByCode(code)
-            .orElseThrow(() -> new IllegalArgumentException("Coupon '" + code + "' not found."));
-
-        if (!coupon.isValid())
-            throw new IllegalStateException("Coupon '" + code + "' is expired or inactive.");
-        if (subtotal < coupon.getMinOrderAmount())
-            throw new IllegalStateException(String.format(
-                "Minimum order of %.2f BDT required for this coupon.", coupon.getMinOrderAmount()));
-        return coupon;
+        return validationUseCase.execute(code, subtotal);
     }
 
     public double calculateDiscount(String code, double subtotal) {
-        return RepositoryFactory.coupons()
-                   .findByCode(code)
-                   .map(c -> c.calculateDiscount(subtotal))
-                   .orElse(0.0);
+        return queryService.calculateDiscount(code, subtotal);
     }
 
     public void markUsed(String couponId) {
-        RepositoryFactory.coupons().findById(couponId).ifPresent(c -> {
-            c.incrementUsage();
-            RepositoryFactory.coupons().save(couponId, c);
-        });
+        commandService.markUsed(couponId);
     }
 
     public List<Coupon> getAllCoupons() {
-        return RepositoryFactory.coupons().findAll();
+        return queryService.getAllCoupons();
     }
 }

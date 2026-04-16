@@ -12,14 +12,30 @@ import com.fooddelivery.application.cart.UpdateCartItemQuantityUseCase;
 import com.fooddelivery.application.common.EmailValidator;
 import com.fooddelivery.application.common.IdGenerator;
 import com.fooddelivery.application.common.PasswordHasher;
+import com.fooddelivery.application.coupon.CouponCommandService;
+import com.fooddelivery.application.coupon.CouponQueryService;
+import com.fooddelivery.application.coupon.CouponValidationUseCase;
+import com.fooddelivery.application.menu.MenuManagementService;
+import com.fooddelivery.application.menu.MenuQueryService;
+import com.fooddelivery.application.order.AcceptPickupUseCase;
 import com.fooddelivery.application.order.AdvanceOrderStatusUseCase;
 import com.fooddelivery.application.order.CancelOrderUseCase;
 import com.fooddelivery.application.order.CompleteDeliveryUseCase;
 import com.fooddelivery.application.order.GetActiveRestaurantOrdersUseCase;
+import com.fooddelivery.application.order.GetDeliveredOrdersForRiderUseCase;
 import com.fooddelivery.application.order.GetOrderByIdUseCase;
 import com.fooddelivery.application.order.GetOrderHistoryUseCase;
+import com.fooddelivery.application.order.GetReadyForPickupOrdersUseCase;
 import com.fooddelivery.application.order.GetRestaurantOrdersUseCase;
 import com.fooddelivery.application.order.PlaceOrderUseCase;
+import com.fooddelivery.application.payment.GetPaymentForOrderUseCase;
+import com.fooddelivery.application.restaurant.RestaurantManagementService;
+import com.fooddelivery.application.restaurant.RestaurantQueryService;
+import com.fooddelivery.application.restaurant.RestaurantRegistrationUseCase;
+import com.fooddelivery.application.rider.FindRiderByIdUseCase;
+import com.fooddelivery.application.rider.FindRiderByUserIdUseCase;
+import com.fooddelivery.application.rider.RegisterRiderUseCase;
+import com.fooddelivery.application.rider.SetRiderAvailabilityUseCase;
 import com.fooddelivery.domain.policy.OrderStatusPolicy;
 import com.fooddelivery.domain.repository.CartRepository;
 import com.fooddelivery.domain.repository.CouponRepository;
@@ -42,10 +58,11 @@ import com.fooddelivery.infrastructure.security.Sha256PasswordHasher;
 import com.fooddelivery.infrastructure.session.CurrentSession;
 import com.fooddelivery.infrastructure.session.InMemoryCurrentSession;
 import com.fooddelivery.infrastructure.util.UuidIdGenerator;
+import com.fooddelivery.application.payment.MarkCashOnDeliveryCollectedUseCase;
+import com.fooddelivery.application.payment.ProcessPaymentUseCase;
+import com.fooddelivery.application.rider.GetAllRidersUseCase;
+import com.fooddelivery.application.rider.GetAvailableRidersUseCase;
 
-/**
- * Central dependency container for the application.
- */
 public final class AppContext {
 
     private static final AppContext INSTANCE = build();
@@ -88,6 +105,32 @@ public final class AppContext {
     private final AdvanceOrderStatusUseCase advanceOrderStatusUseCase;
     private final CancelOrderUseCase cancelOrderUseCase;
     private final CompleteDeliveryUseCase completeDeliveryUseCase;
+    private final GetReadyForPickupOrdersUseCase getReadyForPickupOrdersUseCase;
+    private final GetDeliveredOrdersForRiderUseCase getDeliveredOrdersForRiderUseCase;
+    private final AcceptPickupUseCase acceptPickupUseCase;
+
+    private final RestaurantRegistrationUseCase restaurantRegistrationUseCase;
+    private final RestaurantQueryService restaurantQueryService;
+    private final RestaurantManagementService restaurantManagementService;
+
+    private final MenuQueryService menuQueryService;
+    private final MenuManagementService menuManagementService;
+
+    private final CouponCommandService couponCommandService;
+    private final CouponQueryService couponQueryService;
+    private final CouponValidationUseCase couponValidationUseCase;
+
+    private final GetPaymentForOrderUseCase getPaymentForOrderUseCase;
+    private final FindRiderByIdUseCase findRiderByIdUseCase;
+    private final FindRiderByUserIdUseCase findRiderByUserIdUseCase;
+    private final RegisterRiderUseCase registerRiderUseCase;
+    private final SetRiderAvailabilityUseCase setRiderAvailabilityUseCase;
+
+    private final ProcessPaymentUseCase processPaymentUseCase;
+    private final MarkCashOnDeliveryCollectedUseCase markCashOnDeliveryCollectedUseCase;
+
+    private final GetAvailableRidersUseCase getAvailableRidersUseCase;
+    private final GetAllRidersUseCase getAllRidersUseCase;
 
     private AppContext(UserRepository userRepository,
                        RestaurantRepository restaurantRepository,
@@ -121,7 +164,27 @@ public final class AppContext {
                        GetActiveRestaurantOrdersUseCase getActiveRestaurantOrdersUseCase,
                        AdvanceOrderStatusUseCase advanceOrderStatusUseCase,
                        CancelOrderUseCase cancelOrderUseCase,
-                       CompleteDeliveryUseCase completeDeliveryUseCase) {
+                       CompleteDeliveryUseCase completeDeliveryUseCase,
+                       GetReadyForPickupOrdersUseCase getReadyForPickupOrdersUseCase,
+                       GetDeliveredOrdersForRiderUseCase getDeliveredOrdersForRiderUseCase,
+                       AcceptPickupUseCase acceptPickupUseCase,
+                       RestaurantRegistrationUseCase restaurantRegistrationUseCase,
+                       RestaurantQueryService restaurantQueryService,
+                       RestaurantManagementService restaurantManagementService,
+                       MenuQueryService menuQueryService,
+                       MenuManagementService menuManagementService,
+                       CouponCommandService couponCommandService,
+                       CouponQueryService couponQueryService,
+                       CouponValidationUseCase couponValidationUseCase,
+                       GetPaymentForOrderUseCase getPaymentForOrderUseCase,
+                       FindRiderByIdUseCase findRiderByIdUseCase,
+                       FindRiderByUserIdUseCase findRiderByUserIdUseCase,
+                       RegisterRiderUseCase registerRiderUseCase,
+                       SetRiderAvailabilityUseCase setRiderAvailabilityUseCase,
+                       ProcessPaymentUseCase processPaymentUseCase,
+                       MarkCashOnDeliveryCollectedUseCase markCashOnDeliveryCollectedUseCase,
+                       GetAvailableRidersUseCase getAvailableRidersUseCase,
+                       GetAllRidersUseCase getAllRidersUseCase) {
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
         this.menuItemRepository = menuItemRepository;
@@ -155,6 +218,26 @@ public final class AppContext {
         this.advanceOrderStatusUseCase = advanceOrderStatusUseCase;
         this.cancelOrderUseCase = cancelOrderUseCase;
         this.completeDeliveryUseCase = completeDeliveryUseCase;
+        this.getReadyForPickupOrdersUseCase = getReadyForPickupOrdersUseCase;
+        this.getDeliveredOrdersForRiderUseCase = getDeliveredOrdersForRiderUseCase;
+        this.acceptPickupUseCase = acceptPickupUseCase;
+        this.restaurantRegistrationUseCase = restaurantRegistrationUseCase;
+        this.restaurantQueryService = restaurantQueryService;
+        this.restaurantManagementService = restaurantManagementService;
+        this.menuQueryService = menuQueryService;
+        this.menuManagementService = menuManagementService;
+        this.couponCommandService = couponCommandService;
+        this.couponQueryService = couponQueryService;
+        this.couponValidationUseCase = couponValidationUseCase;
+        this.getPaymentForOrderUseCase = getPaymentForOrderUseCase;
+        this.findRiderByIdUseCase = findRiderByIdUseCase;
+        this.findRiderByUserIdUseCase = findRiderByUserIdUseCase;
+        this.registerRiderUseCase = registerRiderUseCase;
+        this.setRiderAvailabilityUseCase = setRiderAvailabilityUseCase;
+        this.processPaymentUseCase = processPaymentUseCase;
+        this.markCashOnDeliveryCollectedUseCase = markCashOnDeliveryCollectedUseCase;
+        this.getAvailableRidersUseCase = getAvailableRidersUseCase;
+        this.getAllRidersUseCase = getAllRidersUseCase;
     }
 
     private static AppContext build() {
@@ -174,17 +257,32 @@ public final class AppContext {
 
         DeliveryFeeCalculator deliveryFeeCalculator = new DefaultDeliveryFeeCalculator();
         RiderAssigner riderAssigner = new RepositoryRiderAssigner(riderRepository, orderRepository);
-        OrderPaymentProcessor orderPaymentProcessor = new LegacyOrderPaymentProcessor();
+
+        ProcessPaymentUseCase processPaymentUseCase =
+                new ProcessPaymentUseCase(paymentRepository, idGenerator);
+
+        MarkCashOnDeliveryCollectedUseCase markCashOnDeliveryCollectedUseCase =
+                new MarkCashOnDeliveryCollectedUseCase(paymentRepository);
+
+        GetAvailableRidersUseCase getAvailableRidersUseCase =
+                new GetAvailableRidersUseCase(riderRepository);
+
+        GetAllRidersUseCase getAllRidersUseCase =
+                new GetAllRidersUseCase(riderRepository);
+
+        OrderPaymentProcessor orderPaymentProcessor =
+                new LegacyOrderPaymentProcessor(
+                        processPaymentUseCase,
+                        markCashOnDeliveryCollectedUseCase
+                );
         OrderStatusPolicy orderStatusPolicy = new DefaultOrderStatusPolicy();
 
         RegisterUserUseCase registerUserUseCase = new RegisterUserUseCase(
                 userRepository, emailValidator, passwordHasher, idGenerator
         );
-
         LoginUseCase loginUseCase = new LoginUseCase(
                 userRepository, passwordHasher, currentSession
         );
-
         LogoutUseCase logoutUseCase = new LogoutUseCase(currentSession);
         GetCurrentUserUseCase getCurrentUserUseCase = new GetCurrentUserUseCase(currentSession);
 
@@ -222,6 +320,42 @@ public final class AppContext {
                         orderStatusPolicy,
                         orderPaymentProcessor
                 );
+        GetReadyForPickupOrdersUseCase getReadyForPickupOrdersUseCase =
+                new GetReadyForPickupOrdersUseCase(orderRepository);
+        GetDeliveredOrdersForRiderUseCase getDeliveredOrdersForRiderUseCase =
+                new GetDeliveredOrdersForRiderUseCase(orderRepository);
+        AcceptPickupUseCase acceptPickupUseCase =
+                new AcceptPickupUseCase(orderRepository, riderRepository, orderStatusPolicy);
+
+        RestaurantRegistrationUseCase restaurantRegistrationUseCase =
+                new RestaurantRegistrationUseCase(restaurantRepository, idGenerator);
+        RestaurantQueryService restaurantQueryService =
+                new RestaurantQueryService(restaurantRepository);
+        RestaurantManagementService restaurantManagementService =
+                new RestaurantManagementService(restaurantRepository);
+
+        MenuQueryService menuQueryService =
+                new MenuQueryService(menuItemRepository);
+        MenuManagementService menuManagementService =
+                new MenuManagementService(menuItemRepository, idGenerator);
+
+        CouponCommandService couponCommandService =
+                new CouponCommandService(couponRepository, idGenerator);
+        CouponQueryService couponQueryService =
+                new CouponQueryService(couponRepository);
+        CouponValidationUseCase couponValidationUseCase =
+                new CouponValidationUseCase(couponRepository);
+
+        GetPaymentForOrderUseCase getPaymentForOrderUseCase =
+                new GetPaymentForOrderUseCase(paymentRepository);
+        FindRiderByIdUseCase findRiderByIdUseCase =
+                new FindRiderByIdUseCase(riderRepository);
+        FindRiderByUserIdUseCase findRiderByUserIdUseCase =
+                new FindRiderByUserIdUseCase(riderRepository);
+        RegisterRiderUseCase registerRiderUseCase =
+                new RegisterRiderUseCase(riderRepository, idGenerator);
+        SetRiderAvailabilityUseCase setRiderAvailabilityUseCase =
+                new SetRiderAvailabilityUseCase(riderRepository);
 
         return new AppContext(
                 userRepository,
@@ -256,7 +390,27 @@ public final class AppContext {
                 getActiveRestaurantOrdersUseCase,
                 advanceOrderStatusUseCase,
                 cancelOrderUseCase,
-                completeDeliveryUseCase
+                completeDeliveryUseCase,
+                getReadyForPickupOrdersUseCase,
+                getDeliveredOrdersForRiderUseCase,
+                acceptPickupUseCase,
+                restaurantRegistrationUseCase,
+                restaurantQueryService,
+                restaurantManagementService,
+                menuQueryService,
+                menuManagementService,
+                couponCommandService,
+                couponQueryService,
+                couponValidationUseCase,
+                getPaymentForOrderUseCase,
+                findRiderByIdUseCase,
+                findRiderByUserIdUseCase,
+                registerRiderUseCase,
+                setRiderAvailabilityUseCase,
+                processPaymentUseCase,
+                markCashOnDeliveryCollectedUseCase,
+                getAvailableRidersUseCase,
+                getAllRidersUseCase
         );
     }
 
@@ -264,135 +418,78 @@ public final class AppContext {
         return INSTANCE;
     }
 
-    public UserRepository userRepository() {
-        return userRepository;
+    public UserRepository userRepository() { return userRepository; }
+    public RestaurantRepository restaurantRepository() { return restaurantRepository; }
+    public MenuItemRepository menuItemRepository() { return menuItemRepository; }
+    public OrderRepository orderRepository() { return orderRepository; }
+    public RiderRepository riderRepository() { return riderRepository; }
+    public CouponRepository couponRepository() { return couponRepository; }
+    public PaymentRepository paymentRepository() { return paymentRepository; }
+    public CartRepository cartRepository() { return cartRepository; }
+
+    public EmailValidator emailValidator() { return emailValidator; }
+    public PasswordHasher passwordHasher() { return passwordHasher; }
+    public IdGenerator idGenerator() { return idGenerator; }
+    public CurrentSession currentSession() { return currentSession; }
+
+    public DeliveryFeeCalculator deliveryFeeCalculator() { return deliveryFeeCalculator; }
+    public RiderAssigner riderAssigner() { return riderAssigner; }
+    public OrderPaymentProcessor orderPaymentProcessor() { return orderPaymentProcessor; }
+    public OrderStatusPolicy orderStatusPolicy() { return orderStatusPolicy; }
+
+    public RegisterUserUseCase registerUserUseCase() { return registerUserUseCase; }
+    public LoginUseCase loginUseCase() { return loginUseCase; }
+    public LogoutUseCase logoutUseCase() { return logoutUseCase; }
+    public GetCurrentUserUseCase getCurrentUserUseCase() { return getCurrentUserUseCase; }
+
+    public GetCartUseCase getCartUseCase() { return getCartUseCase; }
+    public AddCartItemUseCase addCartItemUseCase() { return addCartItemUseCase; }
+    public RemoveCartItemUseCase removeCartItemUseCase() { return removeCartItemUseCase; }
+    public UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase() { return updateCartItemQuantityUseCase; }
+    public ClearCartUseCase clearCartUseCase() { return clearCartUseCase; }
+
+    public PlaceOrderUseCase placeOrderUseCase() { return placeOrderUseCase; }
+    public GetOrderByIdUseCase getOrderByIdUseCase() { return getOrderByIdUseCase; }
+    public GetOrderHistoryUseCase getOrderHistoryUseCase() { return getOrderHistoryUseCase; }
+    public GetRestaurantOrdersUseCase getRestaurantOrdersUseCase() { return getRestaurantOrdersUseCase; }
+    public GetActiveRestaurantOrdersUseCase getActiveRestaurantOrdersUseCase() { return getActiveRestaurantOrdersUseCase; }
+    public AdvanceOrderStatusUseCase advanceOrderStatusUseCase() { return advanceOrderStatusUseCase; }
+    public CancelOrderUseCase cancelOrderUseCase() { return cancelOrderUseCase; }
+    public CompleteDeliveryUseCase completeDeliveryUseCase() { return completeDeliveryUseCase; }
+    public GetReadyForPickupOrdersUseCase getReadyForPickupOrdersUseCase() { return getReadyForPickupOrdersUseCase; }
+    public GetDeliveredOrdersForRiderUseCase getDeliveredOrdersForRiderUseCase() { return getDeliveredOrdersForRiderUseCase; }
+    public AcceptPickupUseCase acceptPickupUseCase() { return acceptPickupUseCase; }
+
+    public RestaurantRegistrationUseCase restaurantRegistrationUseCase() { return restaurantRegistrationUseCase; }
+    public RestaurantQueryService restaurantQueryService() { return restaurantQueryService; }
+    public RestaurantManagementService restaurantManagementService() { return restaurantManagementService; }
+
+    public MenuQueryService menuQueryService() { return menuQueryService; }
+    public MenuManagementService menuManagementService() { return menuManagementService; }
+
+    public CouponCommandService couponCommandService() { return couponCommandService; }
+    public CouponQueryService couponQueryService() { return couponQueryService; }
+    public CouponValidationUseCase couponValidationUseCase() { return couponValidationUseCase; }
+
+    public GetPaymentForOrderUseCase getPaymentForOrderUseCase() { return getPaymentForOrderUseCase; }
+    public FindRiderByIdUseCase findRiderByIdUseCase() { return findRiderByIdUseCase; }
+    public FindRiderByUserIdUseCase findRiderByUserIdUseCase() { return findRiderByUserIdUseCase; }
+    public RegisterRiderUseCase registerRiderUseCase() { return registerRiderUseCase; }
+    public SetRiderAvailabilityUseCase setRiderAvailabilityUseCase() { return setRiderAvailabilityUseCase; }
+
+    public ProcessPaymentUseCase processPaymentUseCase() {
+        return processPaymentUseCase;
     }
 
-    public RestaurantRepository restaurantRepository() {
-        return restaurantRepository;
+    public MarkCashOnDeliveryCollectedUseCase markCashOnDeliveryCollectedUseCase() {
+        return markCashOnDeliveryCollectedUseCase;
     }
 
-    public MenuItemRepository menuItemRepository() {
-        return menuItemRepository;
+    public GetAvailableRidersUseCase getAvailableRidersUseCase() {
+        return getAvailableRidersUseCase;
     }
 
-    public OrderRepository orderRepository() {
-        return orderRepository;
-    }
-
-    public RiderRepository riderRepository() {
-        return riderRepository;
-    }
-
-    public CouponRepository couponRepository() {
-        return couponRepository;
-    }
-
-    public PaymentRepository paymentRepository() {
-        return paymentRepository;
-    }
-
-    public CartRepository cartRepository() {
-        return cartRepository;
-    }
-
-    public EmailValidator emailValidator() {
-        return emailValidator;
-    }
-
-    public PasswordHasher passwordHasher() {
-        return passwordHasher;
-    }
-
-    public IdGenerator idGenerator() {
-        return idGenerator;
-    }
-
-    public CurrentSession currentSession() {
-        return currentSession;
-    }
-
-    public DeliveryFeeCalculator deliveryFeeCalculator() {
-        return deliveryFeeCalculator;
-    }
-
-    public RiderAssigner riderAssigner() {
-        return riderAssigner;
-    }
-
-    public OrderPaymentProcessor orderPaymentProcessor() {
-        return orderPaymentProcessor;
-    }
-
-    public OrderStatusPolicy orderStatusPolicy() {
-        return orderStatusPolicy;
-    }
-
-    public RegisterUserUseCase registerUserUseCase() {
-        return registerUserUseCase;
-    }
-
-    public LoginUseCase loginUseCase() {
-        return loginUseCase;
-    }
-
-    public LogoutUseCase logoutUseCase() {
-        return logoutUseCase;
-    }
-
-    public GetCurrentUserUseCase getCurrentUserUseCase() {
-        return getCurrentUserUseCase;
-    }
-
-    public GetCartUseCase getCartUseCase() {
-        return getCartUseCase;
-    }
-
-    public AddCartItemUseCase addCartItemUseCase() {
-        return addCartItemUseCase;
-    }
-
-    public RemoveCartItemUseCase removeCartItemUseCase() {
-        return removeCartItemUseCase;
-    }
-
-    public UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase() {
-        return updateCartItemQuantityUseCase;
-    }
-
-    public ClearCartUseCase clearCartUseCase() {
-        return clearCartUseCase;
-    }
-
-    public PlaceOrderUseCase placeOrderUseCase() {
-        return placeOrderUseCase;
-    }
-
-    public GetOrderByIdUseCase getOrderByIdUseCase() {
-        return getOrderByIdUseCase;
-    }
-
-    public GetOrderHistoryUseCase getOrderHistoryUseCase() {
-        return getOrderHistoryUseCase;
-    }
-
-    public GetRestaurantOrdersUseCase getRestaurantOrdersUseCase() {
-        return getRestaurantOrdersUseCase;
-    }
-
-    public GetActiveRestaurantOrdersUseCase getActiveRestaurantOrdersUseCase() {
-        return getActiveRestaurantOrdersUseCase;
-    }
-
-    public AdvanceOrderStatusUseCase advanceOrderStatusUseCase() {
-        return advanceOrderStatusUseCase;
-    }
-
-    public CancelOrderUseCase cancelOrderUseCase() {
-        return cancelOrderUseCase;
-    }
-
-    public CompleteDeliveryUseCase completeDeliveryUseCase() {
-        return completeDeliveryUseCase;
+    public GetAllRidersUseCase getAllRidersUseCase() {
+        return getAllRidersUseCase;
     }
 }

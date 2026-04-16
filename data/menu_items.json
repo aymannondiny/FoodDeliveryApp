@@ -1,7 +1,7 @@
 {
-  "ITEM-6F001B5A": {
-    "id": "ITEM-6F001B5A",
-    "restaurantId": "RST-AEEC52FD",
+  "ITEM-751419EF": {
+    "id": "ITEM-751419EF",
+    "restaurantId": "RST-27472F14",
     "name": "Lentil Soup (Dal)",
     "description": "Classic red lentil soup",
     "category": "Starters",
@@ -10,139 +10,9 @@
     "quantity": -1,
     "addons": []
   },
-  "ITEM-F9E1CD3B": {
-    "id": "ITEM-F9E1CD3B",
-    "restaurantId": "RST-042497AA",
-    "name": "French Fries (Large)",
-    "description": "Golden crispy fries",
-    "category": "Sides",
-    "price": 80.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-1C9756AD": {
-    "id": "ITEM-1C9756AD",
-    "restaurantId": "RST-77791E00",
-    "name": "Chicken Fried Rice",
-    "description": "Classic wok-tossed fried rice",
-    "category": "Mains",
-    "price": 180.0,
-    "available": true,
-    "quantity": -1,
-    "addons": [
-      {
-        "id": "ADD-490817EC",
-        "name": "Extra Egg",
-        "extraPrice": 20.0,
-        "available": true
-      },
-      {
-        "id": "ADD-B2AACC69",
-        "name": "Chilli Sauce",
-        "extraPrice": 15.0,
-        "available": true
-      }
-    ]
-  },
-  "ITEM-86B0DC13": {
-    "id": "ITEM-86B0DC13",
-    "restaurantId": "RST-042497AA",
-    "name": "Chocolate Milkshake",
-    "description": "Thick and creamy",
-    "category": "Drinks",
-    "price": 120.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-14FA9C43": {
-    "id": "ITEM-14FA9C43",
-    "restaurantId": "RST-AEEC52FD",
-    "name": "Mishti Doi",
-    "description": "Sweet yoghurt dessert",
-    "category": "Desserts",
-    "price": 60.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-98079104": {
-    "id": "ITEM-98079104",
-    "restaurantId": "RST-77791E00",
-    "name": "Dim Sum Basket (6 pcs)",
-    "description": "Steamed assorted dim sum",
-    "category": "Starters",
-    "price": 160.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-C9CC32BC": {
-    "id": "ITEM-C9CC32BC",
-    "restaurantId": "RST-042497AA",
-    "name": "Crispy Chicken Burger",
-    "description": "Crunchy fried chicken fillet with coleslaw",
-    "category": "Burgers",
-    "price": 190.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-A58EB29D": {
-    "id": "ITEM-A58EB29D",
-    "restaurantId": "RST-AEEC52FD",
-    "name": "Borhani",
-    "description": "Spiced yoghurt drink",
-    "category": "Drinks",
-    "price": 50.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-2E6BE58F": {
-    "id": "ITEM-2E6BE58F",
-    "restaurantId": "RST-77791E00",
-    "name": "Kung Pao Chicken",
-    "description": "Spicy stir-fried chicken with peanuts",
-    "category": "Mains",
-    "price": 240.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-F3CEF540": {
-    "id": "ITEM-F3CEF540",
-    "restaurantId": "RST-AEEC52FD",
-    "name": "Beef Tehari",
-    "description": "Spiced beef and rice",
-    "category": "Mains",
-    "price": 200.0,
-    "available": true,
-    "quantity": -1,
-    "addons": [
-      {
-        "id": "ADD-3C0F1FF6",
-        "name": "Extra Achar",
-        "extraPrice": 10.0,
-        "available": true
-      }
-    ]
-  },
-  "ITEM-7FFB591E": {
-    "id": "ITEM-7FFB591E",
-    "restaurantId": "RST-77791E00",
-    "name": "Spring Rolls (4 pcs)",
-    "description": "Crispy vegetable spring rolls",
-    "category": "Starters",
-    "price": 100.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-18914997": {
-    "id": "ITEM-18914997",
-    "restaurantId": "RST-77791E00",
+  "ITEM-F406F9FE": {
+    "id": "ITEM-F406F9FE",
+    "restaurantId": "RST-467D7221",
     "name": "Beef Chow Mein",
     "description": "Stir-fried noodles with beef",
     "category": "Mains",
@@ -151,31 +21,9 @@
     "quantity": -1,
     "addons": []
   },
-  "ITEM-52CA44FE": {
-    "id": "ITEM-52CA44FE",
-    "restaurantId": "RST-AEEC52FD",
-    "name": "Chicken Rezala",
-    "description": "Creamy white curry",
-    "category": "Mains",
-    "price": 220.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-8618EFA8": {
-    "id": "ITEM-8618EFA8",
-    "restaurantId": "RST-042497AA",
-    "name": "Onion Rings",
-    "description": "Beer-battered onion rings",
-    "category": "Sides",
-    "price": 90.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-9DD42F43": {
-    "id": "ITEM-9DD42F43",
-    "restaurantId": "RST-042497AA",
+  "ITEM-CF2F4887": {
+    "id": "ITEM-CF2F4887",
+    "restaurantId": "RST-54452F4D",
     "name": "Soft Drink (330ml)",
     "description": "Coke / Pepsi / 7UP",
     "category": "Drinks",
@@ -184,44 +32,27 @@
     "quantity": -1,
     "addons": []
   },
-  "ITEM-78D34C9C": {
-    "id": "ITEM-78D34C9C",
-    "restaurantId": "RST-AEEC52FD",
-    "name": "Kacchi Biriyani",
-    "description": "Slow-cooked mutton biriyani with saffron rice",
+  "ITEM-F39A9016": {
+    "id": "ITEM-F39A9016",
+    "restaurantId": "RST-27472F14",
+    "name": "Beef Tehari",
+    "description": "Spiced beef and rice",
     "category": "Mains",
-    "price": 280.0,
+    "price": 200.0,
     "available": true,
     "quantity": -1,
     "addons": [
       {
-        "id": "ADD-36AAE014",
-        "name": "Extra Raita",
-        "extraPrice": 20.0,
-        "available": true
-      },
-      {
-        "id": "ADD-526F63F9",
-        "name": "Extra Meat",
-        "extraPrice": 60.0,
+        "id": "ADD-1B3D411E",
+        "name": "Extra Achar",
+        "extraPrice": 10.0,
         "available": true
       }
     ]
   },
-  "ITEM-EDAAC5A4": {
-    "id": "ITEM-EDAAC5A4",
-    "restaurantId": "RST-77791E00",
-    "name": "Mango Pudding",
-    "description": "Silky smooth mango pudding",
-    "category": "Desserts",
-    "price": 90.0,
-    "available": true,
-    "quantity": -1,
-    "addons": []
-  },
-  "ITEM-20D3ECB3": {
-    "id": "ITEM-20D3ECB3",
-    "restaurantId": "RST-042497AA",
+  "ITEM-469447EC": {
+    "id": "ITEM-469447EC",
+    "restaurantId": "RST-54452F4D",
     "name": "Classic Beef Burger",
     "description": "Angus beef patty, lettuce, tomato, cheese",
     "category": "Burgers",
@@ -230,34 +61,192 @@
     "quantity": -1,
     "addons": [
       {
-        "id": "ADD-D82446BE",
+        "id": "ADD-CDE75038",
         "name": "Extra Cheese",
         "extraPrice": 30.0,
         "available": true
       },
       {
-        "id": "ADD-EEDAACD0",
+        "id": "ADD-44D740DD",
         "name": "Bacon",
         "extraPrice": 50.0,
         "available": true
       },
       {
-        "id": "ADD-DD1D9A86",
+        "id": "ADD-AB58B55A",
         "name": "Jalapeños",
         "extraPrice": 20.0,
         "available": true
       }
     ]
   },
-  "ITEM-DA3049F9": {
-    "id": "ITEM-DA3049F9",
-    "restaurantId": "RST-47240502",
-    "name": "Mexican Pasta",
-    "description": "Cheese, Meat, BBQ Sauce",
-    "category": "Pasta",
-    "price": 230.0,
-    "available": false,
-    "quantity": 30,
+  "ITEM-AD8D0024": {
+    "id": "ITEM-AD8D0024",
+    "restaurantId": "RST-54452F4D",
+    "name": "Crispy Chicken Burger",
+    "description": "Crunchy fried chicken fillet with coleslaw",
+    "category": "Burgers",
+    "price": 190.0,
+    "available": true,
+    "quantity": -1,
     "addons": []
+  },
+  "ITEM-84B524A1": {
+    "id": "ITEM-84B524A1",
+    "restaurantId": "RST-54452F4D",
+    "name": "Onion Rings",
+    "description": "Beer-battered onion rings",
+    "category": "Sides",
+    "price": 90.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-0F4A020B": {
+    "id": "ITEM-0F4A020B",
+    "restaurantId": "RST-27472F14",
+    "name": "Borhani",
+    "description": "Spiced yoghurt drink",
+    "category": "Drinks",
+    "price": 50.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-DF1C791F": {
+    "id": "ITEM-DF1C791F",
+    "restaurantId": "RST-467D7221",
+    "name": "Kung Pao Chicken",
+    "description": "Spicy stir-fried chicken with peanuts",
+    "category": "Mains",
+    "price": 240.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-EDDADCFF": {
+    "id": "ITEM-EDDADCFF",
+    "restaurantId": "RST-27472F14",
+    "name": "Kacchi Biriyani",
+    "description": "Slow-cooked mutton biriyani with saffron rice",
+    "category": "Mains",
+    "price": 280.0,
+    "available": true,
+    "quantity": -1,
+    "addons": [
+      {
+        "id": "ADD-964B05A6",
+        "name": "Extra Raita",
+        "extraPrice": 20.0,
+        "available": true
+      },
+      {
+        "id": "ADD-74DBA3A3",
+        "name": "Extra Meat",
+        "extraPrice": 60.0,
+        "available": true
+      }
+    ]
+  },
+  "ITEM-5476A6FD": {
+    "id": "ITEM-5476A6FD",
+    "restaurantId": "RST-467D7221",
+    "name": "Spring Rolls (4 pcs)",
+    "description": "Crispy vegetable spring rolls",
+    "category": "Starters",
+    "price": 100.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-6C3D27A6": {
+    "id": "ITEM-6C3D27A6",
+    "restaurantId": "RST-54452F4D",
+    "name": "Chocolate Milkshake",
+    "description": "Thick and creamy",
+    "category": "Drinks",
+    "price": 120.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-BE9A15CF": {
+    "id": "ITEM-BE9A15CF",
+    "restaurantId": "RST-54452F4D",
+    "name": "French Fries (Large)",
+    "description": "Golden crispy fries",
+    "category": "Sides",
+    "price": 80.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-55038CB8": {
+    "id": "ITEM-55038CB8",
+    "restaurantId": "RST-467D7221",
+    "name": "Mango Pudding",
+    "description": "Silky smooth mango pudding",
+    "category": "Desserts",
+    "price": 90.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-2B6D742C": {
+    "id": "ITEM-2B6D742C",
+    "restaurantId": "RST-27472F14",
+    "name": "Chicken Rezala",
+    "description": "Creamy white curry",
+    "category": "Mains",
+    "price": 220.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-A7CBD3BB": {
+    "id": "ITEM-A7CBD3BB",
+    "restaurantId": "RST-27472F14",
+    "name": "Mishti Doi",
+    "description": "Sweet yoghurt dessert",
+    "category": "Desserts",
+    "price": 60.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-DDEEC0C1": {
+    "id": "ITEM-DDEEC0C1",
+    "restaurantId": "RST-467D7221",
+    "name": "Dim Sum Basket (6 pcs)",
+    "description": "Steamed assorted dim sum",
+    "category": "Starters",
+    "price": 160.0,
+    "available": true,
+    "quantity": -1,
+    "addons": []
+  },
+  "ITEM-A815C432": {
+    "id": "ITEM-A815C432",
+    "restaurantId": "RST-467D7221",
+    "name": "Chicken Fried Rice",
+    "description": "Classic wok-tossed fried rice",
+    "category": "Mains",
+    "price": 180.0,
+    "available": true,
+    "quantity": -1,
+    "addons": [
+      {
+        "id": "ADD-1B78F637",
+        "name": "Extra Egg",
+        "extraPrice": 20.0,
+        "available": true
+      },
+      {
+        "id": "ADD-72BF2289",
+        "name": "Chilli Sauce",
+        "extraPrice": 15.0,
+        "available": true
+      }
+    ]
   }
 }

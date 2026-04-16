@@ -1,11 +1,11 @@
 package com.fooddelivery.ui.customer;
 
-import com.fooddelivery.model.Order;
 import com.fooddelivery.model.OrderStatus;
-import com.fooddelivery.service.OrderService;
-import com.fooddelivery.service.PaymentService;
-import com.fooddelivery.service.RiderService;
 import com.fooddelivery.ui.UITheme;
+import com.fooddelivery.ui.customer.orders.OrderHistoryController;
+import com.fooddelivery.ui.customer.orders.viewmodel.OrderSummaryViewModel;
+import com.fooddelivery.ui.customer.orders.viewmodel.TrackingStepViewModel;
+import com.fooddelivery.ui.customer.orders.viewmodel.TrackingViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,13 +13,17 @@ import java.util.List;
 
 /**
  * Shows a customer's order history with live status tracking per order.
+ * Delegates orchestration to OrderHistoryController.
  */
 public class OrderHistoryPanel extends JPanel {
 
-    private final String  customerId;
-    private JPanel        listPanel;
+    private final String customerId;
+    private final OrderHistoryController controller;
 
-    public OrderHistoryPanel(String customerId) {
+    private JPanel listPanel;
+
+    public OrderHistoryPanel(OrderHistoryController controller, String customerId) {
+        this.controller = controller;
         this.customerId = customerId;
         setLayout(new BorderLayout());
         setBackground(UITheme.BG);
@@ -30,11 +34,14 @@ public class OrderHistoryPanel extends JPanel {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(UITheme.SECONDARY);
         header.setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
+
         JLabel title = new JLabel("📋  My Orders");
         title.setFont(UITheme.FONT_TITLE);
         title.setForeground(Color.WHITE);
+
         JButton refreshBtn = UITheme.secondaryButton("↻ Refresh");
         refreshBtn.addActionListener(e -> refresh());
+
         header.add(title, BorderLayout.WEST);
         header.add(refreshBtn, BorderLayout.EAST);
         add(header, BorderLayout.NORTH);
@@ -54,7 +61,7 @@ public class OrderHistoryPanel extends JPanel {
 
     public void refresh() {
         listPanel.removeAll();
-        List<Order> orders = OrderService.getInstance().getOrderHistory(customerId);
+        List<OrderSummaryViewModel> orders = controller.loadOrderHistory(customerId);
 
         if (orders.isEmpty()) {
             JLabel empty = new JLabel("No orders yet. Start ordering!", SwingConstants.CENTER);
@@ -62,71 +69,83 @@ public class OrderHistoryPanel extends JPanel {
             empty.setForeground(UITheme.TEXT_MUTED);
             listPanel.add(empty);
         } else {
-            for (Order order : orders) {
+            for (OrderSummaryViewModel order : orders) {
                 listPanel.add(buildOrderCard(order));
                 listPanel.add(Box.createVerticalStrut(8));
             }
         }
+
         listPanel.revalidate();
         listPanel.repaint();
     }
 
-    private JPanel buildOrderCard(Order order) {
+    private JPanel buildOrderCard(OrderSummaryViewModel order) {
         JPanel card = new JPanel(new BorderLayout(10, 6));
         card.setBackground(UITheme.CARD_BG);
         card.setBorder(UITheme.cardBorder());
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
 
-        // Top row: restaurant + date
         JPanel topRow = new JPanel(new BorderLayout());
         topRow.setOpaque(false);
+
         JLabel restaurant = new JLabel(order.getRestaurantName());
         restaurant.setFont(UITheme.FONT_HEADING);
         restaurant.setForeground(UITheme.SECONDARY);
-        JLabel dateLabel = UITheme.mutedLabel(order.getCreatedAt().toLocalDate().toString());
+
+        JLabel dateLabel = UITheme.mutedLabel(order.getDateText());
+
         topRow.add(restaurant, BorderLayout.WEST);
         topRow.add(dateLabel, BorderLayout.EAST);
 
-        // Items summary
-        StringBuilder sb = new StringBuilder();
-        order.getItems().forEach(i -> sb.append(i.getQuantity()).append("× ")
-                                        .append(i.getMenuItemName()).append("  "));
-        JLabel itemsLabel = UITheme.mutedLabel(sb.toString().trim());
+        JLabel itemsLabel = UITheme.mutedLabel(order.getItemsSummaryText());
 
-        // Status badge
         Color statusColor = switch (order.getStatus()) {
-            case DELIVERED  -> UITheme.SUCCESS;
-            case CANCELLED  -> UITheme.DANGER;
+            case DELIVERED -> UITheme.SUCCESS;
+            case CANCELLED -> UITheme.DANGER;
             case PLACED, CONFIRMED -> UITheme.STAR_COLOR;
             default -> UITheme.PRIMARY;
         };
-        JLabel statusLabel = new JLabel("  " + order.getStatus().name() + "  ");
+
+        JLabel statusLabel = new JLabel("  " + order.getStatusText() + "  ");
         statusLabel.setFont(UITheme.FONT_SMALL);
         statusLabel.setForeground(Color.WHITE);
         statusLabel.setBackground(statusColor);
         statusLabel.setOpaque(true);
         statusLabel.setBorder(BorderFactory.createEmptyBorder(3, 8, 3, 8));
 
-        // Totals
-        JLabel totalLabel = new JLabel(String.format("%.2f BDT", order.getTotalAmount()));
+        JLabel totalLabel = new JLabel(order.getTotalText());
         totalLabel.setFont(UITheme.FONT_BOLD);
         totalLabel.setForeground(UITheme.PRIMARY);
 
-        // Buttons
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         btnRow.setOpaque(false);
+
         JButton trackBtn = UITheme.primaryButton("Track");
-        trackBtn.addActionListener(e -> showTrackingDialog(order));
+        trackBtn.addActionListener(e -> showTrackingDialog(order.getOrderId()));
         btnRow.add(trackBtn);
 
         if (order.isCancellable()) {
             JButton cancelBtn = UITheme.dangerButton("Cancel");
             cancelBtn.addActionListener(e -> {
-                int confirm = JOptionPane.showConfirmDialog(this,
-                    "Cancel this order?", "Confirm Cancellation", JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(
+                        this,
+                        "Cancel this order?",
+                        "Confirm Cancellation",
+                        JOptionPane.YES_NO_OPTION
+                );
+
                 if (confirm == JOptionPane.YES_OPTION) {
-                    OrderService.getInstance().cancelOrder(order.getId());
-                    refresh();
+                    try {
+                        controller.cancelOrder(order.getOrderId());
+                        refresh();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(
+                                this,
+                                ex.getMessage(),
+                                "Cancellation Failed",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
                 }
             });
             btnRow.add(cancelBtn);
@@ -149,9 +168,25 @@ public class OrderHistoryPanel extends JPanel {
         return card;
     }
 
-    private void showTrackingDialog(Order order) {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-                                     "Tracking: " + order.getId(), true);
+    private void showTrackingDialog(String orderId) {
+        TrackingViewModel tracking;
+        try {
+            tracking = controller.loadTracking(orderId);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage(),
+                    "Tracking Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        JDialog dialog = new JDialog(
+                (Frame) SwingUtilities.getWindowAncestor(this),
+                "Tracking: " + tracking.getOrderId(),
+                true
+        );
         dialog.setSize(460, 440);
         dialog.setLocationRelativeTo(this);
         dialog.setLayout(new BorderLayout(10, 10));
@@ -161,78 +196,74 @@ public class OrderHistoryPanel extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 24, 20, 24));
         panel.setBackground(UITheme.CARD_BG);
 
-        // Status steps
-        OrderStatus[] steps = OrderStatus.values();
-        int currentIdx = order.getStatus().ordinal();
+        for (int i = 0; i < tracking.getSteps().size(); i++) {
+            TrackingStepViewModel step = tracking.getSteps().get(i);
 
-        for (int i = 0; i < steps.length - 1; i++) { // exclude CANCELLED
-            if (steps[i] == OrderStatus.CANCELLED) continue;
             JPanel stepRow = new JPanel(new BorderLayout(10, 0));
             stepRow.setOpaque(false);
             stepRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-            boolean done   = i <= currentIdx;
-            boolean active = i == currentIdx;
-
-            JLabel dot = new JLabel(done ? "✅" : "○");
+            JLabel dot = new JLabel(step.isDone() ? "✅" : "○");
             dot.setFont(new Font("Segoe UI", Font.PLAIN, 16));
             dot.setPreferredSize(new Dimension(30, 30));
 
-            JLabel stepLabel = new JLabel(steps[i].getDescription());
-            stepLabel.setFont(active ? UITheme.FONT_BOLD : UITheme.FONT_BODY);
-            stepLabel.setForeground(done ? UITheme.SUCCESS : UITheme.TEXT_MUTED);
+            JLabel stepLabel = new JLabel(step.getLabel());
+            stepLabel.setFont(step.isActive() ? UITheme.FONT_BOLD : UITheme.FONT_BODY);
+            stepLabel.setForeground(step.isDone() ? UITheme.SUCCESS : UITheme.TEXT_MUTED);
 
-            if (order.getStatusHistory().containsKey(steps[i])) {
-                JLabel timeLabel = UITheme.mutedLabel(
-                    order.getStatusHistory().get(steps[i]).toLocalTime().toString().substring(0, 8));
+            if (step.getTimeText() != null) {
+                JLabel timeLabel = UITheme.mutedLabel(step.getTimeText());
                 stepRow.add(timeLabel, BorderLayout.EAST);
             }
 
             stepRow.add(dot, BorderLayout.WEST);
             stepRow.add(stepLabel, BorderLayout.CENTER);
             panel.add(stepRow);
-            if (i < steps.length - 2) {
+
+            if (i < tracking.getSteps().size() - 1) {
                 JLabel line = new JLabel("   │");
                 line.setForeground(UITheme.BORDER_COLOR);
                 panel.add(line);
             }
         }
 
-        // Rider info
-        if (order.getRiderId() != null) {
+        if (tracking.getRiderText() != null) {
             panel.add(UITheme.separator());
-            RiderService.getInstance().findById(order.getRiderId()).ifPresent(r -> {
-                JLabel riderLabel = new JLabel("🛵  Rider: " + r.getName() + "  ·  " + r.getPhone());
-                riderLabel.setFont(UITheme.FONT_BODY);
-                riderLabel.setForeground(UITheme.SECONDARY);
-                panel.add(riderLabel);
-            });
+            JLabel riderLabel = new JLabel(tracking.getRiderText());
+            riderLabel.setFont(UITheme.FONT_BODY);
+            riderLabel.setForeground(UITheme.SECONDARY);
+            panel.add(riderLabel);
         }
 
-        // Payment info
-        PaymentService.getInstance().getPaymentForOrder(order.getId()).ifPresent(p -> {
-            JLabel payLabel = UITheme.mutedLabel(
-                "Payment: " + p.getMethod().name() + "  [" + p.getStatus().name() + "]");
+        if (tracking.getPaymentText() != null) {
+            JLabel payLabel = UITheme.mutedLabel(tracking.getPaymentText());
             panel.add(payLabel);
-        });
+        }
 
-        // Advance status button (for demo / restaurant simulation)
         panel.add(Box.createVerticalStrut(12));
-        if (order.getStatus() != OrderStatus.DELIVERED
-         && order.getStatus() != OrderStatus.CANCELLED) {
+
+        if (tracking.canAdvanceDemo()) {
             JButton advBtn = UITheme.primaryButton("▶ Simulate Next Status (Demo)");
             advBtn.addActionListener(e -> {
-                OrderStatus next = OrderStatus.values()[order.getStatus().ordinal() + 1];
-                if (next == OrderStatus.DELIVERED) {
-                    OrderService.getInstance().completeDelivery(order.getId());
-                } else {
-                    OrderService.getInstance().advanceStatus(order.getId(), next);
+                try {
+                    String next = controller.advanceDemoStatus(orderId);
+                    dialog.dispose();
+                    refresh();
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Status updated to: " + next,
+                            "Status Updated",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            ex.getMessage(),
+                            "Status Update Failed",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
-                dialog.dispose();
-                refresh();
-                JOptionPane.showMessageDialog(this,
-                    "Status updated to: " + next, "Status Updated",
-                    JOptionPane.INFORMATION_MESSAGE);
             });
             panel.add(advBtn);
         }
@@ -241,6 +272,7 @@ public class OrderHistoryPanel extends JPanel {
 
         JButton close = UITheme.secondaryButton("Close");
         close.addActionListener(e -> dialog.dispose());
+
         JPanel south = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         south.add(close);
         dialog.add(south, BorderLayout.SOUTH);

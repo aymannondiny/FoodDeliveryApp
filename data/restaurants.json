@@ -1,29 +1,7 @@
 {
-  "RST-47240502": {
-    "id": "RST-47240502",
-    "ownerId": "USR-847ACA92",
-    "name": "TasteBuds",
-    "cuisineType": "Italiano",
-    "address": {
-      "street": "Road 2",
-      "area": "Dhanmondi",
-      "city": "Dhaka",
-      "zipCode": "",
-      "latitude": 0.0,
-      "longitude": 0.0
-    },
-    "rating": 0.0,
-    "totalRatings": 0,
-    "isOpen": true,
-    "deliveryFeePerKm": 15.0,
-    "minOrderAmount": 200.0,
-    "estimatedDeliveryMinutes": 50,
-    "phoneNumber": "01800000000",
-    "approved": true
-  },
-  "RST-AEEC52FD": {
-    "id": "RST-AEEC52FD",
-    "ownerId": "USR-E8D659B4",
+  "RST-27472F14": {
+    "id": "RST-27472F14",
+    "ownerId": "USR-F35D4D96",
     "name": "Dhaka Bites",
     "description": "Authentic Bangladeshi home-style cooking",
     "cuisineType": "Bangladeshi",
@@ -57,44 +35,9 @@
     "phoneNumber": "01800000001",
     "approved": true
   },
-  "RST-77791E00": {
-    "id": "RST-77791E00",
-    "ownerId": "USR-374EBB3E",
-    "name": "Dragon Palace",
-    "description": "Authentic Chinese cuisine in the heart of Gulshan",
-    "cuisineType": "Chinese",
-    "address": {
-      "street": "8 Gulshan Avenue",
-      "area": "Gulshan",
-      "city": "Dhaka",
-      "zipCode": "1212",
-      "latitude": 23.7808,
-      "longitude": 90.4148
-    },
-    "rating": 4.2,
-    "totalRatings": 85,
-    "isOpen": true,
-    "schedule": {
-      "openTime": "11:00",
-      "closeTime": "22:30",
-      "openDays": [
-        "MONDAY",
-        "TUESDAY",
-        "WEDNESDAY",
-        "THURSDAY",
-        "FRIDAY",
-        "SATURDAY"
-      ]
-    },
-    "deliveryFeePerKm": 20.0,
-    "minOrderAmount": 150.0,
-    "estimatedDeliveryMinutes": 40,
-    "phoneNumber": "01800000002",
-    "approved": true
-  },
-  "RST-042497AA": {
-    "id": "RST-042497AA",
-    "ownerId": "USR-E8D659B4",
+  "RST-54452F4D": {
+    "id": "RST-54452F4D",
+    "ownerId": "USR-F35D4D96",
     "name": "Burger Republic",
     "description": "Gourmet burgers \u0026 sides, fast!",
     "cuisineType": "Fast Food",
@@ -128,26 +71,39 @@
     "phoneNumber": "01800000003",
     "approved": true
   },
-  "RST-6242F46C": {
-    "id": "RST-6242F46C",
-    "ownerId": "USR-8FC8F544",
-    "name": "",
-    "cuisineType": "",
+  "RST-467D7221": {
+    "id": "RST-467D7221",
+    "ownerId": "USR-B4A5D064",
+    "name": "Dragon Palace",
+    "description": "Authentic Chinese cuisine in the heart of Gulshan",
+    "cuisineType": "Chinese",
     "address": {
-      "street": "",
-      "area": "",
+      "street": "8 Gulshan Avenue",
+      "area": "Gulshan",
       "city": "Dhaka",
-      "zipCode": "",
-      "latitude": 0.0,
-      "longitude": 0.0
+      "zipCode": "1212",
+      "latitude": 23.7808,
+      "longitude": 90.4148
     },
-    "rating": 0.0,
-    "totalRatings": 0,
+    "rating": 4.2,
+    "totalRatings": 85,
     "isOpen": true,
-    "deliveryFeePerKm": 15.0,
+    "schedule": {
+      "openTime": "11:00",
+      "closeTime": "22:30",
+      "openDays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY"
+      ]
+    },
+    "deliveryFeePerKm": 20.0,
     "minOrderAmount": 150.0,
-    "estimatedDeliveryMinutes": 30,
-    "phoneNumber": "",
+    "estimatedDeliveryMinutes": 40,
+    "phoneNumber": "01800000002",
     "approved": true
   }
 }

@@ -1,112 +1,86 @@
 package com.fooddelivery.service;
 
-import com.fooddelivery.model.*;
-import com.fooddelivery.repository.RepositoryFactory;
-import com.fooddelivery.util.AppUtils;
+import com.fooddelivery.application.menu.MenuManagementService;
+import com.fooddelivery.application.menu.MenuQueryService;
+import com.fooddelivery.infrastructure.bootstrap.AppContext;
+import com.fooddelivery.model.MenuItem;
+import com.fooddelivery.model.MenuItemAddon;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
- * Manages menu items: creation, availability toggling,
- * category grouping, searching, and add-on management.
+ * Legacy facade kept for backward compatibility during migration.
+ * New code should prefer menu application services from AppContext.
  */
+@Deprecated
 public class MenuService {
 
     private static MenuService instance;
 
-    private MenuService() {}
+    private final MenuQueryService queryService;
+    private final MenuManagementService managementService;
+
+    private MenuService() {
+        AppContext context = AppContext.create();
+        this.queryService = context.menuQueryService();
+        this.managementService = context.menuManagementService();
+    }
 
     public static synchronized MenuService getInstance() {
-        if (instance == null) instance = new MenuService();
+        if (instance == null) {
+            instance = new MenuService();
+        }
         return instance;
     }
 
-    // ── Creation ─────────────────────────────────────────────────────────────
-
     public MenuItem addMenuItem(String restaurantId, String name, String description,
                                 String category, double price) {
-        MenuItem item = new MenuItem(
-            AppUtils.generateId("ITEM"), restaurantId,
-            name, description, category, price
-        );
-        RepositoryFactory.menuItems().save(item.getId(), item);
-        return item;
+        return managementService.addMenuItem(restaurantId, name, description, category, price);
     }
 
     public MenuItemAddon addAddon(String menuItemId, String name, double extraPrice) {
-        MenuItem item = RepositoryFactory.menuItems().findById(menuItemId)
-            .orElseThrow(() -> new IllegalArgumentException("Menu item not found: " + menuItemId));
-        MenuItemAddon addon = new MenuItemAddon(AppUtils.generateId("ADD"), name, extraPrice);
-        item.addAddon(addon);
-        RepositoryFactory.menuItems().save(menuItemId, item);
-        return addon;
+        return managementService.addAddon(menuItemId, name, extraPrice);
     }
 
-    // ── Queries ──────────────────────────────────────────────────────────────
-
     public List<MenuItem> getMenuForRestaurant(String restaurantId) {
-        return RepositoryFactory.menuItems().findByRestaurant(restaurantId);
+        return queryService.getMenuForRestaurant(restaurantId);
     }
 
     public List<MenuItem> getAvailableMenu(String restaurantId) {
-        return RepositoryFactory.menuItems().findByRestaurant(restaurantId).stream()
-            .filter(MenuItem::isOrderable)
-            .collect(Collectors.toList());
+        return queryService.getAvailableMenu(restaurantId);
     }
 
-    /** Group available items by category. */
     public Map<String, List<MenuItem>> getMenuByCategory(String restaurantId) {
-        return getAvailableMenu(restaurantId).stream()
-            .collect(Collectors.groupingBy(
-                MenuItem::getCategory,
-                TreeMap::new,
-                Collectors.toList()
-            ));
+        return queryService.getMenuByCategory(restaurantId);
     }
 
-    /** Search menu items by name (case-insensitive). */
     public List<MenuItem> searchMenu(String restaurantId, String query) {
-        String q = query.toLowerCase();
-        return getAvailableMenu(restaurantId).stream()
-            .filter(m -> m.getName().toLowerCase().contains(q)
-                      || (m.getDescription() != null && m.getDescription().toLowerCase().contains(q)))
-            .collect(Collectors.toList());
+        return queryService.searchMenu(restaurantId, query);
     }
 
     public Optional<MenuItem> findById(String id) {
-        return RepositoryFactory.menuItems().findById(id);
+        return queryService.findById(id);
     }
 
-    // ── Management ───────────────────────────────────────────────────────────
-
     public void setAvailability(String menuItemId, boolean available) {
-        RepositoryFactory.menuItems().findById(menuItemId).ifPresent(item -> {
-            item.setAvailable(available);
-            RepositoryFactory.menuItems().save(menuItemId, item);
-        });
+        managementService.setAvailability(menuItemId, available);
     }
 
     public void updateQuantity(String menuItemId, int quantity) {
-        RepositoryFactory.menuItems().findById(menuItemId).ifPresent(item -> {
-            item.setQuantity(quantity);
-            RepositoryFactory.menuItems().save(menuItemId, item);
-        });
+        managementService.updateQuantity(menuItemId, quantity);
     }
 
     public void updateItem(MenuItem item) {
-        RepositoryFactory.menuItems().save(item.getId(), item);
+        managementService.updateItem(item);
     }
 
     public void deleteItem(String menuItemId) {
-        RepositoryFactory.menuItems().delete(menuItemId);
+        managementService.deleteItem(menuItemId);
     }
 
-    /** Decrement stock after an order is placed. */
     public void decrementStock(String menuItemId, int quantity) {
-        RepositoryFactory.menuItems().findById(menuItemId).ifPresent(item -> {
-            item.decrementQuantity(quantity);
-            RepositoryFactory.menuItems().save(menuItemId, item);
-        });
+        managementService.decrementStock(menuItemId, quantity);
     }
 }

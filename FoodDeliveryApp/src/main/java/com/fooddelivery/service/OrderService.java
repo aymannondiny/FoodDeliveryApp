@@ -23,6 +23,7 @@ import java.util.Optional;
  * Legacy facade kept for backward compatibility during migration.
  * New code should prefer order use cases from AppContext.
  */
+@Deprecated
 public class OrderService {
 
     private static OrderService instance;

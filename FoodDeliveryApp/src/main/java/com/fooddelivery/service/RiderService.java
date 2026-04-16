@@ -1,48 +1,64 @@
 package com.fooddelivery.service;
 
+import com.fooddelivery.application.rider.FindRiderByIdUseCase;
+import com.fooddelivery.application.rider.GetAllRidersUseCase;
+import com.fooddelivery.application.rider.GetAvailableRidersUseCase;
+import com.fooddelivery.application.rider.RegisterRiderUseCase;
+import com.fooddelivery.application.rider.SetRiderAvailabilityUseCase;
+import com.fooddelivery.infrastructure.bootstrap.AppContext;
 import com.fooddelivery.model.Rider;
-import com.fooddelivery.repository.RepositoryFactory;
-import com.fooddelivery.util.AppUtils;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Manages rider registration, availability, and assignment.
+ * Legacy facade kept for backward compatibility during migration.
+ * New code should prefer rider use cases from AppContext.
  */
+@Deprecated
 public class RiderService {
 
     private static RiderService instance;
 
-    private RiderService() {}
+    private final RegisterRiderUseCase registerRiderUseCase;
+    private final GetAvailableRidersUseCase getAvailableRidersUseCase;
+    private final GetAllRidersUseCase getAllRidersUseCase;
+    private final FindRiderByIdUseCase findRiderByIdUseCase;
+    private final SetRiderAvailabilityUseCase setRiderAvailabilityUseCase;
+
+    private RiderService() {
+        AppContext context = AppContext.create();
+        this.registerRiderUseCase = context.registerRiderUseCase();
+        this.getAvailableRidersUseCase = context.getAvailableRidersUseCase();
+        this.getAllRidersUseCase = context.getAllRidersUseCase();
+        this.findRiderByIdUseCase = context.findRiderByIdUseCase();
+        this.setRiderAvailabilityUseCase = context.setRiderAvailabilityUseCase();
+    }
 
     public static synchronized RiderService getInstance() {
-        if (instance == null) instance = new RiderService();
+        if (instance == null) {
+            instance = new RiderService();
+        }
         return instance;
     }
 
     public Rider register(String userId, String name, String phone, String vehicleType) {
-        Rider rider = new Rider(AppUtils.generateId("RDR"), userId, name, phone, vehicleType);
-        RepositoryFactory.riders().save(rider.getId(), rider);
-        return rider;
+        return registerRiderUseCase.execute(userId, name, phone, vehicleType);
     }
 
     public List<Rider> getAvailableRiders() {
-        return RepositoryFactory.riders().findAvailable();
+        return getAvailableRidersUseCase.execute();
     }
 
     public List<Rider> getAllRiders() {
-        return RepositoryFactory.riders().findAll();
+        return getAllRidersUseCase.execute();
     }
 
     public Optional<Rider> findById(String id) {
-        return RepositoryFactory.riders().findById(id);
+        return findRiderByIdUseCase.execute(id);
     }
 
     public void setAvailability(String riderId, boolean available) {
-        RepositoryFactory.riders().findById(riderId).ifPresent(r -> {
-            r.setAvailable(available);
-            RepositoryFactory.riders().save(riderId, r);
-        });
+        setRiderAvailabilityUseCase.execute(riderId, available);
     }
 }

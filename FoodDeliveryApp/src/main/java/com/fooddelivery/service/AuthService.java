@@ -15,6 +15,7 @@ import java.util.Optional;
  * Legacy facade kept for backward compatibility during migration.
  * New code should prefer auth use cases from AppContext.
  */
+@Deprecated
 public class AuthService {
 
     private static AuthService instance;
