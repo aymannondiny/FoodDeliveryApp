@@ -14,7 +14,7 @@
       "longitude": 90.3752
     },
     "rating": 4.5,
-    "totalRatings": 120,
+    "totalRatings": 2,
     "isOpen": true,
     "schedule": {
       "openTime": "08:00",
@@ -49,8 +49,8 @@
       "latitude": 23.7939,
       "longitude": 90.4053
     },
-    "rating": 4.7,
-    "totalRatings": 340,
+    "rating": 0.0,
+    "totalRatings": 0,
     "isOpen": true,
     "schedule": {
       "openTime": "10:00",
@@ -85,8 +85,8 @@
       "latitude": 23.7808,
       "longitude": 90.4148
     },
-    "rating": 4.2,
-    "totalRatings": 85,
+    "rating": 0.0,
+    "totalRatings": 0,
     "isOpen": true,
     "schedule": {
       "openTime": "11:00",

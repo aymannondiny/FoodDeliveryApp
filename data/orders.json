@@ -1,0 +1,611 @@
+{
+  "ORD-833AB1D2": {
+    "id": "ORD-833AB1D2",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-0F4A020B",
+        "menuItemName": "Borhani",
+        "unitPrice": 50.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      },
+      {
+        "menuItemId": "ITEM-F39A9016",
+        "menuItemName": "Beef Tehari",
+        "unitPrice": 200.0,
+        "quantity": 1,
+        "selectedAddons": [
+          {
+            "id": "ADD-1B3D411E",
+            "name": "Extra Achar",
+            "extraPrice": 10.0,
+            "available": true
+          }
+        ],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "abcd",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 260.0,
+    "deliveryFee": 30.0,
+    "discount": 0.0,
+    "totalAmount": 290.0,
+    "createdAt": "2026-04-16T14:10:07.9010145",
+    "updatedAt": "2026-04-16T14:11:12.3813925",
+    "statusHistory": {
+      "PLACED": "2026-04-16T14:10:07.9010145",
+      "CONFIRMED": "2026-04-16T14:11:05.8274901",
+      "PREPARING": "2026-04-16T14:11:06.9909506",
+      "READY": "2026-04-16T14:11:09.1530705",
+      "PICKED_UP": "2026-04-16T14:11:10.1656047",
+      "ON_THE_WAY": "2026-04-16T14:11:10.9952675",
+      "DELIVERED": "2026-04-16T14:11:12.3813925"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-C0F5CF05": {
+    "id": "ORD-C0F5CF05",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-EDDADCFF",
+        "menuItemName": "Kacchi Biriyani",
+        "unitPrice": 280.0,
+        "quantity": 3,
+        "selectedAddons": [
+          {
+            "id": "ADD-964B05A6",
+            "name": "Extra Raita",
+            "extraPrice": 20.0,
+            "available": true
+          },
+          {
+            "id": "ADD-74DBA3A3",
+            "name": "Extra Meat",
+            "extraPrice": 60.0,
+            "available": true
+          }
+        ],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "abcd",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 1080.0,
+    "deliveryFee": 30.0,
+    "discount": 0.0,
+    "totalAmount": 1110.0,
+    "createdAt": "2026-04-16T16:26:55.0484938",
+    "updatedAt": "2026-04-16T16:27:26.3914527",
+    "statusHistory": {
+      "PLACED": "2026-04-16T16:26:55.0484938",
+      "CONFIRMED": "2026-04-16T16:27:05.9882811",
+      "PREPARING": "2026-04-16T16:27:06.5468646",
+      "READY": "2026-04-16T16:27:07.5819317",
+      "PICKED_UP": "2026-04-16T16:27:25.2415411",
+      "ON_THE_WAY": "2026-04-16T16:27:25.9936216",
+      "DELIVERED": "2026-04-16T16:27:26.3914527"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-C4068FCA": {
+    "id": "ORD-C4068FCA",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-F39A9016",
+        "menuItemName": "Beef Tehari",
+        "unitPrice": 200.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "bcdh",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 200.0,
+    "deliveryFee": 30.0,
+    "discount": 0.0,
+    "totalAmount": 230.0,
+    "createdAt": "2026-04-16T17:20:14.2155728",
+    "updatedAt": "2026-04-16T17:20:32.5823516",
+    "statusHistory": {
+      "PLACED": "2026-04-16T17:20:14.2155728",
+      "CONFIRMED": "2026-04-16T17:20:24.3946151",
+      "PREPARING": "2026-04-16T17:20:24.9182941",
+      "READY": "2026-04-16T17:20:25.7096936",
+      "PICKED_UP": "2026-04-16T17:20:31.6223627",
+      "ON_THE_WAY": "2026-04-16T17:20:32.1524019",
+      "DELIVERED": "2026-04-16T17:20:32.5823516"
+    },
+    "restaurantRating": 5.0,
+    "riderRating": 4.0,
+    "rated": true
+  },
+  "ORD-A9883E7B": {
+    "id": "ORD-A9883E7B",
+    "customerId": "USR-F5FD9C66",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-0F4A020B",
+        "menuItemName": "Borhani",
+        "unitPrice": 50.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      },
+      {
+        "menuItemId": "ITEM-F39A9016",
+        "menuItemName": "Beef Tehari",
+        "unitPrice": 200.0,
+        "quantity": 1,
+        "selectedAddons": [
+          {
+            "id": "ADD-1B3D411E",
+            "name": "Extra Achar",
+            "extraPrice": 10.0,
+            "available": true
+          }
+        ],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "sbfhf",
+      "area": "akdjed",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 260.0,
+    "deliveryFee": 150.0,
+    "discount": 0.0,
+    "totalAmount": 410.0,
+    "createdAt": "2026-04-16T13:53:43.0526998",
+    "updatedAt": "2026-04-16T13:54:36.2468935",
+    "statusHistory": {
+      "PLACED": "2026-04-16T13:53:43.0526998",
+      "CONFIRMED": "2026-04-16T13:54:03.1733692",
+      "PREPARING": "2026-04-16T13:54:04.1028829",
+      "READY": "2026-04-16T13:54:21.376028",
+      "PICKED_UP": "2026-04-16T13:54:31.9390252",
+      "ON_THE_WAY": "2026-04-16T13:54:35.0113358",
+      "DELIVERED": "2026-04-16T13:54:36.2468935"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-561062AC": {
+    "id": "ORD-561062AC",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-467D7221",
+    "restaurantName": "Dragon Palace",
+    "items": [
+      {
+        "menuItemId": "ITEM-55038CB8",
+        "menuItemName": "Mango Pudding",
+        "unitPrice": 90.0,
+        "quantity": 2,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "CANCELLED",
+    "deliveryAddress": {
+      "street": "road 3",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 180.0,
+    "deliveryFee": 150.0,
+    "discount": 0.0,
+    "totalAmount": 330.0,
+    "createdAt": "2026-04-16T11:47:03.9353952",
+    "updatedAt": "2026-04-16T11:48:03.131274",
+    "statusHistory": {
+      "PLACED": "2026-04-16T11:47:03.9353952",
+      "CANCELLED": "2026-04-16T11:48:03.131274"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-8A5F28C2": {
+    "id": "ORD-8A5F28C2",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-0F4A020B",
+        "menuItemName": "Borhani",
+        "unitPrice": 50.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      },
+      {
+        "menuItemId": "ITEM-F39A9016",
+        "menuItemName": "Beef Tehari",
+        "unitPrice": 200.0,
+        "quantity": 10,
+        "selectedAddons": [
+          {
+            "id": "ADD-1B3D411E",
+            "name": "Extra Achar",
+            "extraPrice": 10.0,
+            "available": true
+          }
+        ],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "abcd",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 2150.0,
+    "deliveryFee": 30.0,
+    "discount": 0.0,
+    "totalAmount": 2180.0,
+    "createdAt": "2026-04-16T14:58:14.1493332",
+    "updatedAt": "2026-04-16T14:59:00.905603",
+    "statusHistory": {
+      "PLACED": "2026-04-16T14:58:14.1493332",
+      "CONFIRMED": "2026-04-16T14:58:30.8265925",
+      "PREPARING": "2026-04-16T14:58:34.4785484",
+      "READY": "2026-04-16T14:58:37.1743421",
+      "PICKED_UP": "2026-04-16T14:58:59.3030797",
+      "ON_THE_WAY": "2026-04-16T14:59:00.1330546",
+      "DELIVERED": "2026-04-16T14:59:00.905603"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-C1986727": {
+    "id": "ORD-C1986727",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-54452F4D",
+    "restaurantName": "Burger Republic",
+    "items": [
+      {
+        "menuItemId": "ITEM-469447EC",
+        "menuItemName": "Classic Beef Burger",
+        "unitPrice": 220.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "PLACED",
+    "deliveryAddress": {
+      "street": "abcd",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 220.0,
+    "deliveryFee": 150.0,
+    "discount": 0.0,
+    "totalAmount": 370.0,
+    "createdAt": "2026-04-16T12:20:11.1333007",
+    "updatedAt": "2026-04-16T12:20:11.1333007",
+    "statusHistory": {
+      "PLACED": "2026-04-16T12:20:11.1333007"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-334FFC36": {
+    "id": "ORD-334FFC36",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-0F4A020B",
+        "menuItemName": "Borhani",
+        "unitPrice": 50.0,
+        "quantity": 3,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "abcd",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 150.0,
+    "deliveryFee": 30.0,
+    "discount": 0.0,
+    "totalAmount": 180.0,
+    "createdAt": "2026-04-16T16:24:52.9128627",
+    "updatedAt": "2026-04-16T16:25:29.8828035",
+    "statusHistory": {
+      "PLACED": "2026-04-16T16:24:52.9128627",
+      "CONFIRMED": "2026-04-16T16:25:02.66297",
+      "PREPARING": "2026-04-16T16:25:06.9183855",
+      "READY": "2026-04-16T16:25:18.0364415",
+      "PICKED_UP": "2026-04-16T16:25:24.2679363",
+      "ON_THE_WAY": "2026-04-16T16:25:24.8189115",
+      "DELIVERED": "2026-04-16T16:25:29.8828035"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-FA879498": {
+    "id": "ORD-FA879498",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-A7CBD3BB",
+        "menuItemName": "Mishti Doi",
+        "unitPrice": 60.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      },
+      {
+        "menuItemId": "ITEM-F39A9016",
+        "menuItemName": "Beef Tehari",
+        "unitPrice": 200.0,
+        "quantity": 1,
+        "selectedAddons": [
+          {
+            "id": "ADD-1B3D411E",
+            "name": "Extra Achar",
+            "extraPrice": 10.0,
+            "available": true
+          }
+        ],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "abcs",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 270.0,
+    "deliveryFee": 30.0,
+    "discount": 0.0,
+    "totalAmount": 300.0,
+    "createdAt": "2026-04-16T12:19:16.217441",
+    "updatedAt": "2026-04-16T13:20:08.3017171",
+    "statusHistory": {
+      "PLACED": "2026-04-16T12:19:16.217441",
+      "CONFIRMED": "2026-04-16T12:19:26.4532796",
+      "PREPARING": "2026-04-16T12:19:40.8316552",
+      "READY": "2026-04-16T13:19:31.1746468",
+      "PICKED_UP": "2026-04-16T13:19:50.0260625",
+      "ON_THE_WAY": "2026-04-16T13:20:00.7330289",
+      "DELIVERED": "2026-04-16T13:20:08.3017171"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-636CF269": {
+    "id": "ORD-636CF269",
+    "customerId": "USR-F5FD9C66",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-0F4A020B",
+        "menuItemName": "Borhani",
+        "unitPrice": 50.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      },
+      {
+        "menuItemId": "ITEM-F39A9016",
+        "menuItemName": "Beef Tehari",
+        "unitPrice": 200.0,
+        "quantity": 1,
+        "selectedAddons": [
+          {
+            "id": "ADD-1B3D411E",
+            "name": "Extra Achar",
+            "extraPrice": 10.0,
+            "available": true
+          }
+        ],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "abcd",
+      "area": "abcdef",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 260.0,
+    "deliveryFee": 150.0,
+    "discount": 0.0,
+    "totalAmount": 410.0,
+    "createdAt": "2026-04-16T13:51:12.644601",
+    "updatedAt": "2026-04-16T13:52:26.4109968",
+    "statusHistory": {
+      "PLACED": "2026-04-16T13:51:12.644601",
+      "CONFIRMED": "2026-04-16T13:51:32.8132677",
+      "PREPARING": "2026-04-16T13:51:37.5906335",
+      "READY": "2026-04-16T13:52:23.9283358",
+      "PICKED_UP": "2026-04-16T13:52:25.0255984",
+      "ON_THE_WAY": "2026-04-16T13:52:25.7213798",
+      "DELIVERED": "2026-04-16T13:52:26.4109968"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  },
+  "ORD-18D63081": {
+    "id": "ORD-18D63081",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-2B6D742C",
+        "menuItemName": "Chicken Rezala",
+        "unitPrice": 220.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "DELIVERED",
+    "deliveryAddress": {
+      "street": "djcndj",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "riderId": "RDR-97BE1622",
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 220.0,
+    "deliveryFee": 30.0,
+    "discount": 0.0,
+    "totalAmount": 250.0,
+    "createdAt": "2026-04-16T16:40:03.7794399",
+    "updatedAt": "2026-04-16T16:40:26.5683728",
+    "statusHistory": {
+      "PLACED": "2026-04-16T16:40:03.7794399",
+      "CONFIRMED": "2026-04-16T16:40:15.5097917",
+      "PREPARING": "2026-04-16T16:40:16.177664",
+      "READY": "2026-04-16T16:40:16.7058251",
+      "PICKED_UP": "2026-04-16T16:40:17.2653848",
+      "ON_THE_WAY": "2026-04-16T16:40:18.7742291",
+      "DELIVERED": "2026-04-16T16:40:26.5683728"
+    },
+    "restaurantRating": 4.0,
+    "riderRating": 5.0,
+    "rated": true
+  },
+  "ORD-53C98202": {
+    "id": "ORD-53C98202",
+    "customerId": "USR-AF00BA60",
+    "restaurantId": "RST-27472F14",
+    "restaurantName": "Dhaka Bites",
+    "items": [
+      {
+        "menuItemId": "ITEM-F39A9016",
+        "menuItemName": "Beef Tehari",
+        "unitPrice": 200.0,
+        "quantity": 1,
+        "selectedAddons": [],
+        "specialInstructions": ""
+      }
+    ],
+    "status": "PLACED",
+    "deliveryAddress": {
+      "street": "Road2",
+      "area": "Dhanmondi",
+      "city": "Dhaka",
+      "zipCode": "",
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "paymentMethod": "CASH_ON_DELIVERY",
+    "subtotal": 200.0,
+    "deliveryFee": 30.0,
+    "discount": 0.0,
+    "totalAmount": 230.0,
+    "createdAt": "2026-04-16T18:21:57.8423936",
+    "updatedAt": "2026-04-16T18:21:57.8423936",
+    "statusHistory": {
+      "PLACED": "2026-04-16T18:21:57.8423936"
+    },
+    "restaurantRating": 0.0,
+    "riderRating": 0.0,
+    "rated": false
+  }
+}

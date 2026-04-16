@@ -63,10 +63,25 @@ public class MenuPanel extends JPanel {
         ratingLabel.setFont(UITheme.FONT_SMALL);
         ratingLabel.setForeground(new Color(0xBDC3C7, false));
 
-        JPanel titleArea = new JPanel(new GridLayout(2, 1));
+        int titleRows = 2;
+        JLabel closedReasonLabel = null;
+
+        if (!restaurant.isCurrentlyOpen()) {
+            titleRows = 3;
+            String reason = buildClosureReason(restaurant);
+            closedReasonLabel = new JLabel("⚠ " + reason);
+            closedReasonLabel.setFont(UITheme.FONT_SMALL);
+            closedReasonLabel.setForeground(new Color(0xE74C3C, false));
+        }
+
+        JPanel titleArea = new JPanel(new GridLayout(titleRows, 1));
         titleArea.setOpaque(false);
         titleArea.add(nameLabel);
         titleArea.add(ratingLabel);
+
+        if (closedReasonLabel != null) {
+            titleArea.add(closedReasonLabel);
+        }
 
         header.add(backBtn, BorderLayout.WEST);
         header.add(titleArea, BorderLayout.CENTER);
@@ -266,5 +281,48 @@ public class MenuPanel extends JPanel {
         btnRow.add(add);
         dialog.add(btnRow, BorderLayout.SOUTH);
         dialog.setVisible(true);
+    }
+
+    private String buildClosureReason(com.fooddelivery.model.Restaurant restaurant) {
+        if (restaurant.isCurrentlyOpen()) {
+            return null;
+        }
+
+        if (!restaurant.isApproved()) {
+            return "This restaurant is pending approval";
+        }
+
+        if (!restaurant.isOpen()) {
+            return "This restaurant has paused orders";
+        }
+
+        com.fooddelivery.model.Schedule schedule = restaurant.getSchedule();
+        if (schedule == null) {
+            return "This restaurant is currently closed";
+        }
+
+        java.time.DayOfWeek today = java.time.LocalDate.now().getDayOfWeek();
+
+        if (schedule.getOpenDays() == null || !schedule.getOpenDays().contains(today)) {
+            return "This restaurant is not open today";
+        }
+
+        try {
+            java.time.LocalTime now = java.time.LocalTime.now();
+            java.time.LocalTime openTime = java.time.LocalTime.parse(schedule.getOpenTime());
+            java.time.LocalTime closeTime = java.time.LocalTime.parse(schedule.getCloseTime());
+
+            if (now.isBefore(openTime)) {
+                return "Opens at " + schedule.getOpenTime();
+            }
+
+            if (!now.isBefore(closeTime)) {
+                return "Closed for today – Was open until " + schedule.getCloseTime();
+            }
+        } catch (Exception e) {
+            return "This restaurant is currently closed";
+        }
+
+        return "This restaurant is currently closed";
     }
 }

@@ -150,12 +150,23 @@ public class CartPanel extends JPanel {
         JPanel row = new JPanel(new BorderLayout(8, 0));
         row.setBackground(UITheme.CARD_BG);
         row.setBorder(UITheme.cardBorder());
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 
-        JPanel info = new JPanel(new GridLayout(2, 1));
+        JPanel info = new JPanel(new GridLayout(3, 1));
         info.setOpaque(false);
         info.add(new JLabel(item.getName()));
         info.add(UITheme.mutedLabel(item.getUnitPriceText()));
+
+        if (!item.isUnlimitedStock()) {
+            JLabel stockLabel = UITheme.mutedLabel("Stock: " + item.getAvailableStock());
+            stockLabel.setForeground(
+                    item.isAtMaxStock()
+                            ? UITheme.DANGER
+                            : UITheme.TEXT_MUTED
+            );
+            info.add(stockLabel);
+        }
+
         row.add(info, BorderLayout.CENTER);
 
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
@@ -169,14 +180,37 @@ public class CartPanel extends JPanel {
         remove.setFont(UITheme.FONT_SMALL);
         remove.setPreferredSize(new Dimension(28, 28));
 
+        if (item.isAtMaxStock()) {
+            plus.setEnabled(false);
+            plus.setToolTipText("Maximum stock reached");
+        }
+
         minus.addActionListener(e -> {
-            controller.updateQuantity(item.getIndex(), item.getQuantity() - 1);
-            refresh();
+            try {
+                controller.updateQuantity(item.getIndex(), item.getQuantity() - 1);
+                refresh();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        ex.getMessage(),
+                        "Update Failed",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
         });
 
         plus.addActionListener(e -> {
-            controller.updateQuantity(item.getIndex(), item.getQuantity() + 1);
-            refresh();
+            try {
+                controller.updateQuantity(item.getIndex(), item.getQuantity() + 1);
+                refresh();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        ex.getMessage(),
+                        "Stock Limit",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
         });
 
         remove.addActionListener(e -> {

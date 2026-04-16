@@ -43,6 +43,7 @@ public class RestaurantDashboardController {
     private final AdvanceOrderStatusUseCase advanceOrderStatusUseCase;
     private final CancelOrderUseCase cancelOrderUseCase;
     private final CompleteDeliveryUseCase completeDeliveryUseCase;
+    private final com.fooddelivery.application.order.GetRestaurantOrdersUseCase getRestaurantOrdersUseCase;
 
     public RestaurantDashboardController(LogoutUseCase logoutUseCase,
                                          RestaurantRegistrationUseCase restaurantRegistrationUseCase,
@@ -53,7 +54,8 @@ public class RestaurantDashboardController {
                                          GetActiveRestaurantOrdersUseCase getActiveRestaurantOrdersUseCase,
                                          AdvanceOrderStatusUseCase advanceOrderStatusUseCase,
                                          CancelOrderUseCase cancelOrderUseCase,
-                                         CompleteDeliveryUseCase completeDeliveryUseCase) {
+                                         CompleteDeliveryUseCase completeDeliveryUseCase,
+                                         com.fooddelivery.application.order.GetRestaurantOrdersUseCase getRestaurantOrdersUseCase) {
         this.logoutUseCase = logoutUseCase;
         this.restaurantRegistrationUseCase = restaurantRegistrationUseCase;
         this.restaurantQueryService = restaurantQueryService;
@@ -64,6 +66,7 @@ public class RestaurantDashboardController {
         this.advanceOrderStatusUseCase = advanceOrderStatusUseCase;
         this.cancelOrderUseCase = cancelOrderUseCase;
         this.completeDeliveryUseCase = completeDeliveryUseCase;
+        this.getRestaurantOrdersUseCase = getRestaurantOrdersUseCase;
     }
 
     public void logout() {
@@ -184,6 +187,18 @@ public class RestaurantDashboardController {
             }
         }
 
+        int stars = (int) Math.round(restaurant.getRating());
+        String ratingText;
+        if (restaurant.getTotalRatings() == 0) {
+            ratingText = "No ratings yet";
+        } else {
+            ratingText = "★".repeat(stars)
+                    + "☆".repeat(5 - stars)
+                    + String.format(" %.1f/5 (%d ratings)",
+                    restaurant.getRating(),
+                    restaurant.getTotalRatings());
+        }
+
         return new RestaurantSettingsViewModel(
                 restaurant.getName(),
                 restaurant.getPhoneNumber(),
@@ -191,7 +206,9 @@ public class RestaurantDashboardController {
                 String.valueOf(restaurant.getEstimatedDeliveryMinutes()),
                 openTime,
                 closeTime,
-                restaurant.getDescription() != null ? restaurant.getDescription() : ""
+                restaurant.getDescription() != null ? restaurant.getDescription() : "",
+                ratingText,
+                restaurant.getTotalRatings()
         );
     }
 
@@ -207,12 +224,34 @@ public class RestaurantDashboardController {
         return restaurant;
     }
 
+    public void updateStock(String menuItemId, int newQuantity) {
+        if (newQuantity < -1) {
+            throw new IllegalArgumentException("Stock must be -1 (unlimited) or a non-negative number.");
+        }
+        menuManagementService.updateQuantity(menuItemId, newQuantity);
+    }
+
+    public List<RestaurantOrderViewModel> loadAllOrders(String restaurantId) {
+        return getRestaurantOrdersUseCase.execute(restaurantId).stream()
+                .map(this::toOrderViewModel)
+                .collect(Collectors.toList());
+    }
+
+
     private RestaurantOrderViewModel toOrderViewModel(Order order) {
         OrderStatus next = getNextStatus(order.getStatus());
 
         String itemsSummary = order.getItems().stream()
                 .map(i -> i.getQuantity() + "× " + i.getMenuItemName())
                 .collect(Collectors.joining("  "));
+
+        boolean rated = order.isRated();
+        String foodRatingText = null;
+        if (rated) {
+            foodRatingText = "★".repeat((int) order.getRestaurantRating())
+                    + "☆".repeat(5 - (int) order.getRestaurantRating())
+                    + " (" + String.format("%.0f", order.getRestaurantRating()) + "/5)";
+        }
 
         return new RestaurantOrderViewModel(
                 order.getId(),
@@ -222,7 +261,9 @@ public class RestaurantDashboardController {
                 order.getStatus(),
                 next,
                 next != null ? "→ " + next.name() : null,
-                order.isCancellable()
+                order.isCancellable(),
+                rated,
+                foodRatingText
         );
     }
 

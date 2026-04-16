@@ -4,7 +4,9 @@ import com.fooddelivery.api.ApiServer;
 import com.fooddelivery.infrastructure.bootstrap.AppContext;
 import com.fooddelivery.infrastructure.bootstrap.AppSeeder;
 import com.fooddelivery.infrastructure.bootstrap.DashboardFactory;
+import com.fooddelivery.infrastructure.bootstrap.DemoLauncher;
 import com.fooddelivery.model.User;
+import com.fooddelivery.soap.SoapServer;
 import com.fooddelivery.ui.LoginRegisterPanel;
 import com.fooddelivery.ui.UITheme;
 
@@ -14,11 +16,13 @@ import java.io.IOException;
 
 /**
  * Application entry point.
+ * Starts REST API (8080), SOAP API (9090), and Swing UI.
  */
 public class Main {
 
     private static JFrame frame;
     private static ApiServer apiServer;
+    private static SoapServer soapServer;
     private static AppContext context;
     private static DashboardFactory dashboardFactory;
 
@@ -30,20 +34,49 @@ public class Main {
 
         new AppSeeder(context).seedIfNeeded();
 
+        // Start REST API
         apiServer = new ApiServer();
         try {
             apiServer.start();
         } catch (IOException e) {
-            System.err.println("Warning: Could not start API server – " + e.getMessage());
+            System.err.println("Warning: Could not start REST API server – " + e.getMessage());
         }
 
-        SwingUtilities.invokeLater(Main::showLoginScreen);
+        // Start SOAP API
+        soapServer = new SoapServer();
+        try {
+            soapServer.start(context);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not start SOAP server – " + e.getMessage());
+        }
+
+        SwingUtilities.invokeLater(Main::showStartupDialog);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (apiServer != null) {
-                apiServer.stop();
-            }
+            if (apiServer != null) apiServer.stop();
+            if (soapServer != null) soapServer.stop();
         }));
+    }
+
+    static void showStartupDialog() {
+        String[] options = {"Normal Login", "Demo Mode (3 Windows)"};
+
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "How would you like to start?",
+                "🍔 Food Delivery App",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice == 1) {
+            new DemoLauncher(context, dashboardFactory).launch();
+        } else {
+            showLoginScreen();
+        }
     }
 
     static void showLoginScreen() {

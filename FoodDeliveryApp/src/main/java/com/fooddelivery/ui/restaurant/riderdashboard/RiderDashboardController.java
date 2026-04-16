@@ -19,6 +19,7 @@ import com.fooddelivery.ui.restaurant.riderdashboard.viewmodel.RiderCurrentOrder
 import com.fooddelivery.ui.restaurant.riderdashboard.viewmodel.RiderDeliveryHistoryRowViewModel;
 import com.fooddelivery.ui.restaurant.riderdashboard.viewmodel.RiderPickupOrderViewModel;
 import com.fooddelivery.ui.restaurant.riderdashboard.viewmodel.RiderStatsViewModel;
+import com.fooddelivery.domain.repository.RiderRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class RiderDashboardController {
     private final AdvanceOrderStatusUseCase advanceOrderStatusUseCase;
     private final CompleteDeliveryUseCase completeDeliveryUseCase;
     private final GetDeliveredOrdersForRiderUseCase getDeliveredOrdersForRiderUseCase;
+    private final RiderRepository riderRepository;
 
     public RiderDashboardController(LogoutUseCase logoutUseCase,
                                     FindRiderByUserIdUseCase findRiderByUserIdUseCase,
@@ -50,7 +52,8 @@ public class RiderDashboardController {
                                     GetOrderByIdUseCase getOrderByIdUseCase,
                                     AdvanceOrderStatusUseCase advanceOrderStatusUseCase,
                                     CompleteDeliveryUseCase completeDeliveryUseCase,
-                                    GetDeliveredOrdersForRiderUseCase getDeliveredOrdersForRiderUseCase) {
+                                    GetDeliveredOrdersForRiderUseCase getDeliveredOrdersForRiderUseCase,
+                                    RiderRepository riderRepository) {
         this.logoutUseCase = logoutUseCase;
         this.findRiderByUserIdUseCase = findRiderByUserIdUseCase;
         this.registerRiderUseCase = registerRiderUseCase;
@@ -62,6 +65,7 @@ public class RiderDashboardController {
         this.advanceOrderStatusUseCase = advanceOrderStatusUseCase;
         this.completeDeliveryUseCase = completeDeliveryUseCase;
         this.getDeliveredOrdersForRiderUseCase = getDeliveredOrdersForRiderUseCase;
+        this.riderRepository = riderRepository;
     }
 
     public void logout() {
@@ -132,11 +136,24 @@ public class RiderDashboardController {
 
     public List<RiderDeliveryHistoryRowViewModel> loadDeliveryHistory(String riderId) {
         return getDeliveredOrdersForRiderUseCase.execute(riderId).stream()
-                .map(order -> new RiderDeliveryHistoryRowViewModel(
-                        order.getId(),
-                        order.getRestaurantName(),
-                        String.format("%.2f BDT", order.getTotalAmount())
-                ))
+                .map(order -> {
+                    boolean rated = order.isRated();
+                    String riderRatingText = null;
+                    if (rated && order.getRiderRating() > 0) {
+                        int stars = (int) order.getRiderRating();
+                        riderRatingText = "★".repeat(stars)
+                                + "☆".repeat(5 - stars)
+                                + " (" + String.format("%.0f", order.getRiderRating()) + "/5)";
+                    }
+
+                    return new RiderDeliveryHistoryRowViewModel(
+                            order.getId(),
+                            order.getRestaurantName(),
+                            String.format("%.2f BDT", order.getTotalAmount()),
+                            rated,
+                            riderRatingText
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
@@ -153,11 +170,42 @@ public class RiderDashboardController {
                 ? "Busy"
                 : (rider.isAvailable() ? "Available" : "Unavailable");
 
+        // Compute rating from actual order data for accuracy
+        List<Order> ratedOrders = delivered.stream()
+                .filter(Order::isRated)
+                .filter(o -> o.getRiderRating() > 0)
+                .collect(Collectors.toList());
+
+        long ratedCount = ratedOrders.size();
+
+        String averageRatingText;
+        if (ratedCount == 0) {
+            averageRatingText = "No ratings yet";
+        } else {
+            double avgRating = ratedOrders.stream()
+                    .mapToDouble(Order::getRiderRating)
+                    .average()
+                    .orElse(0);
+
+            int stars = (int) Math.round(avgRating);
+            averageRatingText = "★".repeat(stars)
+                    + "☆".repeat(5 - stars)
+                    + String.format(" %.1f/5 (%d ratings)", avgRating, ratedCount);
+
+            // Sync rider model if out of date
+            if (rider.getTotalRatings() != ratedCount) {
+                rider.setRating(avgRating);
+                rider.setTotalRatings((int) ratedCount);
+                riderRepository.save(rider.getId(), rider);
+            }
+        }
+
         return new RiderStatsViewModel(
                 String.valueOf(totalDeliveries),
                 String.format("%.2f BDT", totalEarnings),
                 rider.getVehicleType(),
-                statusText
+                statusText,
+                averageRatingText
         );
     }
 }

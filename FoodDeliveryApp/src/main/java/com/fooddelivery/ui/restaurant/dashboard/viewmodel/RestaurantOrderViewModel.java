@@ -12,6 +12,8 @@ public class RestaurantOrderViewModel {
     private final OrderStatus nextStatus;
     private final String nextActionText;
     private final boolean cancellable;
+    private final boolean rated;
+    private final String foodRatingText;
 
     public RestaurantOrderViewModel(String orderId,
                                     String itemsSummary,
@@ -20,7 +22,9 @@ public class RestaurantOrderViewModel {
                                     OrderStatus currentStatus,
                                     OrderStatus nextStatus,
                                     String nextActionText,
-                                    boolean cancellable) {
+                                    boolean cancellable,
+                                    boolean rated,
+                                    String foodRatingText) {
         this.orderId = orderId;
         this.itemsSummary = itemsSummary;
         this.totalText = totalText;
@@ -29,6 +33,8 @@ public class RestaurantOrderViewModel {
         this.nextStatus = nextStatus;
         this.nextActionText = nextActionText;
         this.cancellable = cancellable;
+        this.rated = rated;
+        this.foodRatingText = foodRatingText;
     }
 
     public String getOrderId() {
@@ -61,5 +67,13 @@ public class RestaurantOrderViewModel {
 
     public boolean isCancellable() {
         return cancellable;
+    }
+
+    public boolean isRated() {
+        return rated;
+    }
+
+    public String getFoodRatingText() {
+        return foodRatingText;
     }
 }

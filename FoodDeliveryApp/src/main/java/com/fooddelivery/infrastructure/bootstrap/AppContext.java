@@ -17,17 +17,7 @@ import com.fooddelivery.application.coupon.CouponQueryService;
 import com.fooddelivery.application.coupon.CouponValidationUseCase;
 import com.fooddelivery.application.menu.MenuManagementService;
 import com.fooddelivery.application.menu.MenuQueryService;
-import com.fooddelivery.application.order.AcceptPickupUseCase;
-import com.fooddelivery.application.order.AdvanceOrderStatusUseCase;
-import com.fooddelivery.application.order.CancelOrderUseCase;
-import com.fooddelivery.application.order.CompleteDeliveryUseCase;
-import com.fooddelivery.application.order.GetActiveRestaurantOrdersUseCase;
-import com.fooddelivery.application.order.GetDeliveredOrdersForRiderUseCase;
-import com.fooddelivery.application.order.GetOrderByIdUseCase;
-import com.fooddelivery.application.order.GetOrderHistoryUseCase;
-import com.fooddelivery.application.order.GetReadyForPickupOrdersUseCase;
-import com.fooddelivery.application.order.GetRestaurantOrdersUseCase;
-import com.fooddelivery.application.order.PlaceOrderUseCase;
+import com.fooddelivery.application.order.*;
 import com.fooddelivery.application.payment.GetPaymentForOrderUseCase;
 import com.fooddelivery.application.restaurant.RestaurantManagementService;
 import com.fooddelivery.application.restaurant.RestaurantQueryService;
@@ -132,6 +122,8 @@ public final class AppContext {
     private final GetAvailableRidersUseCase getAvailableRidersUseCase;
     private final GetAllRidersUseCase getAllRidersUseCase;
 
+    private final RateOrderUseCase rateOrderUseCase;
+
     private AppContext(UserRepository userRepository,
                        RestaurantRepository restaurantRepository,
                        MenuItemRepository menuItemRepository,
@@ -184,7 +176,8 @@ public final class AppContext {
                        ProcessPaymentUseCase processPaymentUseCase,
                        MarkCashOnDeliveryCollectedUseCase markCashOnDeliveryCollectedUseCase,
                        GetAvailableRidersUseCase getAvailableRidersUseCase,
-                       GetAllRidersUseCase getAllRidersUseCase) {
+                       GetAllRidersUseCase getAllRidersUseCase,
+                       RateOrderUseCase rateOrderUseCase) {
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
         this.menuItemRepository = menuItemRepository;
@@ -238,6 +231,7 @@ public final class AppContext {
         this.markCashOnDeliveryCollectedUseCase = markCashOnDeliveryCollectedUseCase;
         this.getAvailableRidersUseCase = getAvailableRidersUseCase;
         this.getAllRidersUseCase = getAllRidersUseCase;
+        this.rateOrderUseCase = rateOrderUseCase;
     }
 
     private static AppContext build() {
@@ -310,9 +304,9 @@ public final class AppContext {
         GetActiveRestaurantOrdersUseCase getActiveRestaurantOrdersUseCase =
                 new GetActiveRestaurantOrdersUseCase(orderRepository);
         AdvanceOrderStatusUseCase advanceOrderStatusUseCase =
-                new AdvanceOrderStatusUseCase(orderRepository, orderStatusPolicy);
+                new AdvanceOrderStatusUseCase(orderRepository, orderStatusPolicy, riderAssigner);
         CancelOrderUseCase cancelOrderUseCase =
-                new CancelOrderUseCase(orderRepository, orderStatusPolicy);
+                new CancelOrderUseCase(orderRepository, orderStatusPolicy, riderRepository);
         CompleteDeliveryUseCase completeDeliveryUseCase =
                 new CompleteDeliveryUseCase(
                         orderRepository,
@@ -356,7 +350,11 @@ public final class AppContext {
                 new RegisterRiderUseCase(riderRepository, idGenerator);
         SetRiderAvailabilityUseCase setRiderAvailabilityUseCase =
                 new SetRiderAvailabilityUseCase(riderRepository);
-
+        RateOrderUseCase rateOrderUseCase = new RateOrderUseCase(
+                orderRepository,
+                restaurantRepository,
+                riderRepository
+        );
         return new AppContext(
                 userRepository,
                 restaurantRepository,
@@ -410,7 +408,8 @@ public final class AppContext {
                 processPaymentUseCase,
                 markCashOnDeliveryCollectedUseCase,
                 getAvailableRidersUseCase,
-                getAllRidersUseCase
+                getAllRidersUseCase,
+                rateOrderUseCase
         );
     }
 
@@ -491,5 +490,9 @@ public final class AppContext {
 
     public GetAllRidersUseCase getAllRidersUseCase() {
         return getAllRidersUseCase;
+    }
+
+    public RateOrderUseCase rateOrderUseCase() {
+        return rateOrderUseCase;
     }
 }

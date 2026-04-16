@@ -32,6 +32,9 @@ public class Order {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Map<OrderStatus, LocalDateTime> statusHistory; // ordered by insertion
+    private double restaurantRating;   // 0 = not rated
+    private double riderRating;        // 0 = not rated
+    private boolean rated;
 
     public Order() {
         this.items         = new ArrayList<>();
@@ -114,4 +117,27 @@ public class Order {
     public void          setUpdatedAt(LocalDateTime dt)       { this.updatedAt = dt; }
     public Map<OrderStatus, LocalDateTime> getStatusHistory() { return statusHistory; }
     public void          setStatusHistory(Map<OrderStatus, LocalDateTime> h){ this.statusHistory = h; }
+    public double getRestaurantRating() {
+        return restaurantRating;
+    }
+
+    public void setRestaurantRating(double restaurantRating) {
+        this.restaurantRating = restaurantRating;
+    }
+
+    public double getRiderRating() {
+        return riderRating;
+    }
+
+    public void setRiderRating(double riderRating) {
+        this.riderRating = riderRating;
+    }
+
+    public boolean isRated() {
+        return rated;
+    }
+
+    public void setRated(boolean rated) {
+        this.rated = rated;
+    }
 }

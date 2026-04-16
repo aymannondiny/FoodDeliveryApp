@@ -148,8 +148,8 @@ public class AppSeeder {
 
         restaurant.setDescription("Authentic Bangladeshi home-style cooking");
         restaurant.setSchedule(Schedule.allDay("08:00", "23:00"));
-        restaurant.setRating(4.5);
-        restaurant.setTotalRatings(120);
+        restaurant.setRating(0.0);
+        restaurant.setTotalRatings(0);
         context.restaurantRepository().save(restaurant.getId(), restaurant);
 
         MenuItem biriyani = context.menuManagementService().addMenuItem(
@@ -235,8 +235,8 @@ public class AppSeeder {
                         DayOfWeek.SATURDAY
                 )
         ));
-        restaurant.setRating(4.2);
-        restaurant.setTotalRatings(85);
+        restaurant.setRating(0.0);
+        restaurant.setTotalRatings(0);
         context.restaurantRepository().save(restaurant.getId(), restaurant);
 
         MenuItem friedRice = context.menuManagementService().addMenuItem(
@@ -309,8 +309,8 @@ public class AppSeeder {
 
         restaurant.setDescription("Gourmet burgers & sides, fast!");
         restaurant.setSchedule(Schedule.allDay("10:00", "00:00"));
-        restaurant.setRating(4.7);
-        restaurant.setTotalRatings(340);
+        restaurant.setRating(0.0);
+        restaurant.setTotalRatings(0);
         context.restaurantRepository().save(restaurant.getId(), restaurant);
 
         MenuItem classic = context.menuManagementService().addMenuItem(

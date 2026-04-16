@@ -1,5 +1,16 @@
 package com.fooddelivery.infrastructure.bootstrap;
 
+import com.fooddelivery.application.auth.GetCurrentUserUseCase;
+import com.fooddelivery.application.auth.LoginUseCase;
+import com.fooddelivery.application.auth.LogoutUseCase;
+import com.fooddelivery.application.cart.AddCartItemUseCase;
+import com.fooddelivery.application.cart.ClearCartUseCase;
+import com.fooddelivery.application.cart.GetCartUseCase;
+import com.fooddelivery.application.cart.RemoveCartItemUseCase;
+import com.fooddelivery.application.cart.UpdateCartItemQuantityUseCase;
+import com.fooddelivery.infrastructure.repository.memory.InMemoryCartRepository;
+import com.fooddelivery.infrastructure.session.CurrentSession;
+import com.fooddelivery.infrastructure.session.InMemoryCurrentSession;
 import com.fooddelivery.model.User;
 import com.fooddelivery.ui.auth.AuthController;
 import com.fooddelivery.ui.customer.CustomerDashboard;
@@ -16,7 +27,7 @@ import javax.swing.*;
 
 /**
  * Creates UI controllers and dashboards from AppContext.
- * Keeps Main focused on startup only.
+ * Supports both shared-session (normal) and isolated-session (demo) modes.
  */
 public class DashboardFactory {
 
@@ -35,14 +46,28 @@ public class DashboardFactory {
         );
     }
 
+    /**
+     * Normal mode: uses the shared session from AppContext.
+     */
     public JPanel createDashboard(User user, Runnable onLogout) {
+        return buildDashboard(user, onLogout, context.currentSession());
+    }
+
+    /**
+     * Demo mode: uses a dedicated session per window.
+     */
+    public JPanel createIsolatedDashboard(User user, Runnable onLogout, CurrentSession isolatedSession) {
+        return buildDashboard(user, onLogout, isolatedSession);
+    }
+
+    private JPanel buildDashboard(User user, Runnable onLogout, CurrentSession session) {
         return switch (user.getRole()) {
             case CUSTOMER -> new CustomerDashboard(
                     user,
                     onLogout,
                     createRestaurantListController(),
-                    createMenuController(),
-                    createCartController(),
+                    createMenuController(session),
+                    createCartController(session),
                     createOrderHistoryController()
             );
             case RESTAURANT_OWNER -> new RestaurantDashboard(
@@ -59,8 +84,8 @@ public class DashboardFactory {
                     user,
                     onLogout,
                     createRestaurantListController(),
-                    createMenuController(),
-                    createCartController(),
+                    createMenuController(session),
+                    createCartController(session),
                     createOrderHistoryController()
             );
         };
@@ -70,24 +95,25 @@ public class DashboardFactory {
         return new RestaurantListController(context.restaurantQueryService());
     }
 
-    private MenuController createMenuController() {
+    private MenuController createMenuController(CurrentSession session) {
         return new MenuController(
                 context.menuQueryService(),
-                context.getCartUseCase(),
-                context.addCartItemUseCase()
+                new GetCartUseCase(context.cartRepository(), session),
+                new AddCartItemUseCase(context.cartRepository(), session)
         );
     }
 
-    private CartController createCartController() {
+    private CartController createCartController(CurrentSession session) {
         return new CartController(
-                context.getCartUseCase(),
-                context.updateCartItemQuantityUseCase(),
-                context.removeCartItemUseCase(),
-                context.clearCartUseCase(),
+                new GetCartUseCase(context.cartRepository(), session),
+                new UpdateCartItemQuantityUseCase(context.cartRepository(), session),
+                new RemoveCartItemUseCase(context.cartRepository(), session),
+                new ClearCartUseCase(context.cartRepository(), session),
                 context.couponValidationUseCase(),
-                context.getCurrentUserUseCase(),
+                new GetCurrentUserUseCase(session),
                 context.restaurantQueryService(),
-                context.placeOrderUseCase()
+                context.placeOrderUseCase(),
+                context.menuQueryService()
         );
     }
 
@@ -99,7 +125,8 @@ public class DashboardFactory {
                 context.advanceOrderStatusUseCase(),
                 context.completeDeliveryUseCase(),
                 context.findRiderByIdUseCase(),
-                context.getPaymentForOrderUseCase()
+                context.getPaymentForOrderUseCase(),
+                context.rateOrderUseCase()
         );
     }
 
@@ -114,7 +141,8 @@ public class DashboardFactory {
                 context.getActiveRestaurantOrdersUseCase(),
                 context.advanceOrderStatusUseCase(),
                 context.cancelOrderUseCase(),
-                context.completeDeliveryUseCase()
+                context.completeDeliveryUseCase(),
+                context.getRestaurantOrdersUseCase()
         );
     }
 
@@ -130,7 +158,8 @@ public class DashboardFactory {
                 context.getOrderByIdUseCase(),
                 context.advanceOrderStatusUseCase(),
                 context.completeDeliveryUseCase(),
-                context.getDeliveredOrdersForRiderUseCase()
+                context.getDeliveredOrdersForRiderUseCase(),
+                context.riderRepository()
         );
     }
 }
