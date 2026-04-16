@@ -1,13 +1,13 @@
 {
-  "RDR-52536413": {
-    "id": "RDR-52536413",
-    "userId": "USR-FAD65980",
+  "RDR-97BE1622": {
+    "id": "RDR-97BE1622",
+    "userId": "USR-F5FD9C66",
     "name": "Farhan Islam",
     "phone": "01711000004",
     "available": true,
     "currentArea": "Dhanmondi",
     "vehicleType": "Bike",
     "rating": 0.0,
-    "totalDeliveries": 1
+    "totalDeliveries": 0
   }
 }

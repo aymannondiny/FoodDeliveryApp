@@ -15,6 +15,7 @@ import java.util.Optional;
  * Legacy facade kept for backward compatibility during migration.
  * New code should prefer restaurant application services from AppContext.
  */
+@Deprecated
 public class RestaurantService {
 
     private static RestaurantService instance;

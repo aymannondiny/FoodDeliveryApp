@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  * Legacy facade kept for backward compatibility during migration.
  * New code should prefer cart use cases from AppContext.
  */
+@Deprecated
 public class CartService {
 
     private static CartService instance;

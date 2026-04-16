@@ -14,6 +14,7 @@ import java.util.Optional;
  * Legacy facade kept for backward compatibility during migration.
  * New code should prefer menu application services from AppContext.
  */
+@Deprecated
 public class MenuService {
 
     private static MenuService instance;

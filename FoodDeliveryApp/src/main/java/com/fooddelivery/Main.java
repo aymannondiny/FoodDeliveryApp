@@ -2,19 +2,11 @@ package com.fooddelivery;
 
 import com.fooddelivery.api.ApiServer;
 import com.fooddelivery.infrastructure.bootstrap.AppContext;
+import com.fooddelivery.infrastructure.bootstrap.AppSeeder;
+import com.fooddelivery.infrastructure.bootstrap.DashboardFactory;
 import com.fooddelivery.model.User;
 import com.fooddelivery.ui.LoginRegisterPanel;
 import com.fooddelivery.ui.UITheme;
-import com.fooddelivery.ui.auth.AuthController;
-import com.fooddelivery.ui.customer.CustomerDashboard;
-import com.fooddelivery.ui.customer.cart.CartController;
-import com.fooddelivery.ui.customer.menu.MenuController;
-import com.fooddelivery.ui.customer.orders.OrderHistoryController;
-import com.fooddelivery.ui.customer.restaurants.RestaurantListController;
-import com.fooddelivery.ui.restaurant.RestaurantDashboard;
-import com.fooddelivery.ui.restaurant.RiderDashboard;
-import com.fooddelivery.ui.restaurant.dashboard.RestaurantDashboardController;
-import com.fooddelivery.util.DataSeeder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,11 +19,16 @@ public class Main {
 
     private static JFrame frame;
     private static ApiServer apiServer;
+    private static AppContext context;
+    private static DashboardFactory dashboardFactory;
 
     public static void main(String[] args) {
         UITheme.applyLookAndFeel();
 
-        DataSeeder.seed();
+        context = AppContext.create();
+        dashboardFactory = new DashboardFactory(context);
+
+        new AppSeeder(context).seedIfNeeded();
 
         apiServer = new ApiServer();
         try {
@@ -52,16 +49,8 @@ public class Main {
     static void showLoginScreen() {
         frame = buildFrame();
 
-        AppContext context = AppContext.create();
-        AuthController authController = new AuthController(
-                context.registerUserUseCase(),
-                context.loginUseCase(),
-                context.logoutUseCase(),
-                context.getCurrentUserUseCase()
-        );
-
         LoginRegisterPanel loginPanel = new LoginRegisterPanel(
-                authController,
+                dashboardFactory.createAuthController(),
                 Main::onLoginSuccess
         );
 
@@ -74,7 +63,7 @@ public class Main {
 
     static void onLoginSuccess(User user) {
         SwingUtilities.invokeLater(() -> {
-            JPanel dashboard = buildDashboard(user);
+            JPanel dashboard = dashboardFactory.createDashboard(user, Main::showLoginScreen);
             frame.setContentPane(dashboard);
             frame.setSize(1100, 740);
             frame.setLocationRelativeTo(null);
@@ -82,89 +71,6 @@ public class Main {
             frame.revalidate();
             frame.repaint();
         });
-    }
-
-    private static JPanel buildDashboard(User user) {
-        return switch (user.getRole()) {
-            case CUSTOMER -> new CustomerDashboard(
-                    user,
-                    Main::showLoginScreen,
-                    createRestaurantListController(),
-                    createMenuController(),
-                    createCartController(),
-                    createOrderHistoryController()
-            );
-            case RESTAURANT_OWNER -> new RestaurantDashboard(
-                    user,
-                    Main::showLoginScreen,
-                    createRestaurantDashboardController()
-            );
-            case RIDER -> new RiderDashboard(user, Main::showLoginScreen);
-            case ADMIN -> new CustomerDashboard(
-                    user,
-                    Main::showLoginScreen,
-                    createRestaurantListController(),
-                    createMenuController(),
-                    createCartController(),
-                    createOrderHistoryController()
-            );
-        };
-    }
-
-    private static RestaurantListController createRestaurantListController() {
-        AppContext context = AppContext.create();
-        return new RestaurantListController(context.restaurantQueryService());
-    }
-
-    private static MenuController createMenuController() {
-        AppContext context = AppContext.create();
-        return new MenuController(
-                context.menuQueryService(),
-                context.getCartUseCase(),
-                context.addCartItemUseCase()
-        );
-    }
-
-    private static CartController createCartController() {
-        AppContext context = AppContext.create();
-        return new CartController(
-                context.getCartUseCase(),
-                context.updateCartItemQuantityUseCase(),
-                context.removeCartItemUseCase(),
-                context.couponValidationUseCase(),
-                context.getCurrentUserUseCase(),
-                context.restaurantQueryService(),
-                context.placeOrderUseCase()
-        );
-    }
-
-    private static OrderHistoryController createOrderHistoryController() {
-        AppContext context = AppContext.create();
-        return new OrderHistoryController(
-                context.getOrderHistoryUseCase(),
-                context.cancelOrderUseCase(),
-                context.getOrderByIdUseCase(),
-                context.advanceOrderStatusUseCase(),
-                context.completeDeliveryUseCase(),
-                context.findRiderByIdUseCase(),
-                context.getPaymentForOrderUseCase()
-        );
-    }
-
-    private static RestaurantDashboardController createRestaurantDashboardController() {
-        AppContext context = AppContext.create();
-        return new RestaurantDashboardController(
-                context.logoutUseCase(),
-                context.restaurantRegistrationUseCase(),
-                context.restaurantQueryService(),
-                context.restaurantManagementService(),
-                context.menuQueryService(),
-                context.menuManagementService(),
-                context.getActiveRestaurantOrdersUseCase(),
-                context.advanceOrderStatusUseCase(),
-                context.cancelOrderUseCase(),
-                context.completeDeliveryUseCase()
-        );
     }
 
     private static JFrame buildFrame() {

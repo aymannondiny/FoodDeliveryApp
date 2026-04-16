@@ -1,6 +1,7 @@
 package com.fooddelivery.ui.customer.cart;
 
 import com.fooddelivery.application.auth.GetCurrentUserUseCase;
+import com.fooddelivery.application.cart.ClearCartUseCase;
 import com.fooddelivery.application.cart.GetCartUseCase;
 import com.fooddelivery.application.cart.RemoveCartItemUseCase;
 import com.fooddelivery.application.cart.UpdateCartItemQuantityUseCase;
@@ -31,6 +32,7 @@ public class CartController {
     private final GetCartUseCase getCartUseCase;
     private final UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase;
     private final RemoveCartItemUseCase removeCartItemUseCase;
+    private final ClearCartUseCase clearCartUseCase;
     private final CouponValidationUseCase couponValidationUseCase;
     private final GetCurrentUserUseCase getCurrentUserUseCase;
     private final RestaurantQueryService restaurantQueryService;
@@ -39,6 +41,7 @@ public class CartController {
     public CartController(GetCartUseCase getCartUseCase,
                           UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase,
                           RemoveCartItemUseCase removeCartItemUseCase,
+                          ClearCartUseCase clearCartUseCase,
                           CouponValidationUseCase couponValidationUseCase,
                           GetCurrentUserUseCase getCurrentUserUseCase,
                           RestaurantQueryService restaurantQueryService,
@@ -46,6 +49,7 @@ public class CartController {
         this.getCartUseCase = getCartUseCase;
         this.updateCartItemQuantityUseCase = updateCartItemQuantityUseCase;
         this.removeCartItemUseCase = removeCartItemUseCase;
+        this.clearCartUseCase = clearCartUseCase;
         this.couponValidationUseCase = couponValidationUseCase;
         this.getCurrentUserUseCase = getCurrentUserUseCase;
         this.restaurantQueryService = restaurantQueryService;
@@ -74,6 +78,10 @@ public class CartController {
 
     public void removeItem(int index) {
         removeCartItemUseCase.execute(index);
+    }
+
+    public void clearCart() {
+        clearCartUseCase.execute();
     }
 
     public double previewCouponDiscount(String code) {
@@ -117,8 +125,6 @@ public class CartController {
                 ""
         );
 
-        // Note: form.getNote() is currently not persisted because the existing
-        // order placement flow does not yet accept an order-level note.
         return placeOrderUseCase.execute(
                 new PlaceOrderCommand(
                         user.getId(),

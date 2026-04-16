@@ -15,6 +15,8 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
+import static com.fooddelivery.service.AuthService.*;
+
 /**
  * Top-level container for the customer experience.
  * Manages navigation between: Restaurants → Menu → Cart → Orders.
@@ -60,7 +62,7 @@ public class CustomerDashboard extends JPanel {
 
         JButton logoutBtn = UITheme.secondaryButton("Logout");
         logoutBtn.addActionListener(e -> {
-            CartService.getInstance().clear();
+            cartController.clearCart();
             AuthService.getInstance().logout();
             onLogout.run();
         });

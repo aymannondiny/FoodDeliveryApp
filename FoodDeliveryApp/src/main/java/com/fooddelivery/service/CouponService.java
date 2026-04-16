@@ -13,6 +13,7 @@ import java.util.List;
  * Legacy facade kept for backward compatibility during migration.
  * New code should prefer coupon application services from AppContext.
  */
+@Deprecated
 public class CouponService {
 
     private static CouponService instance;

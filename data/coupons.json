@@ -1,33 +1,33 @@
 {
-  "CPN-308377E6": {
-    "id": "CPN-308377E6",
-    "code": "WELCOME20",
-    "discountPercent": 20.0,
-    "maxDiscountAmount": 100.0,
-    "minOrderAmount": 150.0,
-    "expiryDate": "2026-06-27",
-    "active": true,
-    "usageLimit": -1,
-    "usageCount": 0
-  },
-  "CPN-1C1221AE": {
-    "id": "CPN-1C1221AE",
-    "code": "FLAT50",
-    "discountPercent": 50.0,
-    "maxDiscountAmount": 50.0,
-    "minOrderAmount": 300.0,
-    "expiryDate": "2026-04-27",
-    "active": true,
-    "usageLimit": 200,
-    "usageCount": 0
-  },
-  "CPN-20E19F5D": {
-    "id": "CPN-20E19F5D",
+  "CPN-515FA69B": {
+    "id": "CPN-515FA69B",
     "code": "NEWUSER",
     "discountPercent": 15.0,
     "maxDiscountAmount": 80.0,
     "minOrderAmount": 100.0,
-    "expiryDate": "2026-09-27",
+    "expiryDate": "2026-10-15",
+    "active": true,
+    "usageLimit": -1,
+    "usageCount": 0
+  },
+  "CPN-2FDB69CB": {
+    "id": "CPN-2FDB69CB",
+    "code": "FLAT50",
+    "discountPercent": 50.0,
+    "maxDiscountAmount": 50.0,
+    "minOrderAmount": 300.0,
+    "expiryDate": "2026-05-15",
+    "active": true,
+    "usageLimit": 200,
+    "usageCount": 0
+  },
+  "CPN-F130F959": {
+    "id": "CPN-F130F959",
+    "code": "WELCOME20",
+    "discountPercent": 20.0,
+    "maxDiscountAmount": 100.0,
+    "minOrderAmount": 150.0,
+    "expiryDate": "2026-07-15",
     "active": true,
     "usageLimit": -1,
     "usageCount": 0
