@@ -48,7 +48,14 @@ public class RiderDashboard extends JPanel {
         topBar.setBackground(UITheme.SECONDARY);
         topBar.setBorder(BorderFactory.createEmptyBorder(10, 16, 10, 16));
 
-        JLabel title = new JLabel("🛵  Rider Dashboard  –  " + riderUser.getName());
+        // Reload to get synced rating from controller's stats computation
+        rider = controller.reloadRider(rider.getId());
+
+        String riderRatingDisplay = rider.getTotalRatings() > 0
+                ? String.format("  ★ %.1f (%d)", rider.getRating(), rider.getTotalRatings())
+                : "";
+
+        JLabel title = new JLabel("🛵  Rider Dashboard  –  " + riderUser.getName() + riderRatingDisplay);
         title.setFont(UITheme.FONT_TITLE);
         title.setForeground(Color.WHITE);
 
@@ -316,12 +323,21 @@ public class RiderDashboard extends JPanel {
                 JPanel row = new JPanel(new BorderLayout(10, 0));
                 row.setBackground(UITheme.CARD_BG);
                 row.setBorder(UITheme.cardBorder());
-                row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+                row.setMaximumSize(new Dimension(Integer.MAX_VALUE, order.isRated() ? 80 : 60));
 
-                row.add(
-                        new JLabel("Order #" + order.getOrderId() + " – " + order.getRestaurantName()),
-                        BorderLayout.WEST
-                );
+                JPanel leftInfo = new JPanel(new GridLayout(order.isRated() ? 2 : 1, 1, 0, 2));
+                leftInfo.setOpaque(false);
+
+                leftInfo.add(new JLabel("Order #" + order.getOrderId() + " – " + order.getRestaurantName()));
+
+                if (order.isRated() && order.getRiderRatingText() != null) {
+                    JLabel ratingLabel = new JLabel("⭐ Customer rated you: " + order.getRiderRatingText());
+                    ratingLabel.setFont(UITheme.FONT_SMALL);
+                    ratingLabel.setForeground(UITheme.STAR_COLOR);
+                    leftInfo.add(ratingLabel);
+                }
+
+                row.add(leftInfo, BorderLayout.CENTER);
 
                 JLabel amt = new JLabel(order.getTotalAmountText());
                 amt.setForeground(UITheme.PRIMARY);
@@ -378,8 +394,9 @@ public class RiderDashboard extends JPanel {
 
         addStatRow(panel, gc, 0, "Total Deliveries", stats.getTotalDeliveriesText());
         addStatRow(panel, gc, 1, "Total Earnings", stats.getTotalEarningsText());
-        addStatRow(panel, gc, 2, "Vehicle Type", stats.getVehicleTypeText());
-        addStatRow(panel, gc, 3, "Status", stats.getStatusText());
+        addStatRow(panel, gc, 2, "Average Rating", stats.getAverageRatingText());
+        addStatRow(panel, gc, 3, "Vehicle Type", stats.getVehicleTypeText());
+        addStatRow(panel, gc, 4, "Status", stats.getStatusText());
 
         return panel;
     }

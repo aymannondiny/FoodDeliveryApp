@@ -5,6 +5,7 @@ import com.fooddelivery.application.order.CancelOrderUseCase;
 import com.fooddelivery.application.order.CompleteDeliveryUseCase;
 import com.fooddelivery.application.order.GetOrderByIdUseCase;
 import com.fooddelivery.application.order.GetOrderHistoryUseCase;
+import com.fooddelivery.application.order.RateOrderUseCase;
 import com.fooddelivery.application.payment.GetPaymentForOrderUseCase;
 import com.fooddelivery.application.rider.FindRiderByIdUseCase;
 import com.fooddelivery.model.Order;
@@ -31,6 +32,7 @@ public class OrderHistoryController {
     private final CompleteDeliveryUseCase completeDeliveryUseCase;
     private final FindRiderByIdUseCase findRiderByIdUseCase;
     private final GetPaymentForOrderUseCase getPaymentForOrderUseCase;
+    private final RateOrderUseCase rateOrderUseCase;
 
     public OrderHistoryController(GetOrderHistoryUseCase getOrderHistoryUseCase,
                                   CancelOrderUseCase cancelOrderUseCase,
@@ -38,7 +40,8 @@ public class OrderHistoryController {
                                   AdvanceOrderStatusUseCase advanceOrderStatusUseCase,
                                   CompleteDeliveryUseCase completeDeliveryUseCase,
                                   FindRiderByIdUseCase findRiderByIdUseCase,
-                                  GetPaymentForOrderUseCase getPaymentForOrderUseCase) {
+                                  GetPaymentForOrderUseCase getPaymentForOrderUseCase,
+                                  RateOrderUseCase rateOrderUseCase) {
         this.getOrderHistoryUseCase = getOrderHistoryUseCase;
         this.cancelOrderUseCase = cancelOrderUseCase;
         this.getOrderByIdUseCase = getOrderByIdUseCase;
@@ -46,6 +49,7 @@ public class OrderHistoryController {
         this.completeDeliveryUseCase = completeDeliveryUseCase;
         this.findRiderByIdUseCase = findRiderByIdUseCase;
         this.getPaymentForOrderUseCase = getPaymentForOrderUseCase;
+        this.rateOrderUseCase = rateOrderUseCase;
     }
 
     public List<OrderSummaryViewModel> loadOrderHistory(String customerId) {
@@ -56,6 +60,10 @@ public class OrderHistoryController {
 
     public void cancelOrder(String orderId) {
         cancelOrderUseCase.execute(orderId);
+    }
+
+    public void rateOrder(String orderId, double foodRating, double riderRating) {
+        rateOrderUseCase.execute(orderId, foodRating, riderRating);
     }
 
     public TrackingViewModel loadTracking(String orderId) {
@@ -144,6 +152,9 @@ public class OrderHistoryController {
                 .map(this::toItemSummary)
                 .collect(Collectors.joining("  "));
 
+        boolean rateable = order.getStatus() == OrderStatus.DELIVERED && !order.isRated();
+        boolean rated = order.isRated();
+
         return new OrderSummaryViewModel(
                 order.getId(),
                 order.getRestaurantName(),
@@ -152,7 +163,9 @@ public class OrderHistoryController {
                 order.getStatus(),
                 order.getStatus().name(),
                 String.format("%.2f BDT", order.getTotalAmount()),
-                order.isCancellable()
+                order.isCancellable(),
+                rateable,
+                rated
         );
     }
 

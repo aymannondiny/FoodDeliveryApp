@@ -14,6 +14,7 @@ public class Rider {
     private double  rating;
     private int     totalDeliveries;
     private String  currentOrderId; // null when free
+    private int totalRatings;
 
     public Rider() { this.available = true; }
 
@@ -24,6 +25,12 @@ public class Rider {
         this.name        = name;
         this.phone       = phone;
         this.vehicleType = vehicleType;
+    }
+
+    public void addRating(double score) {
+        double total = rating * totalRatings + score;
+        totalRatings++;
+        rating = total / totalRatings;
     }
 
     public boolean isFree() { return available && currentOrderId == null; }
@@ -54,4 +61,11 @@ public class Rider {
     public void    setTotalDeliveries(int t)       { this.totalDeliveries = t; }
     public String  getCurrentOrderId()             { return currentOrderId; }
     public void    setCurrentOrderId(String oid)   { this.currentOrderId = oid; }
+    public int getTotalRatings() {
+        return totalRatings;
+    }
+
+    public void setTotalRatings(int totalRatings) {
+        this.totalRatings = totalRatings;
+    }
 }

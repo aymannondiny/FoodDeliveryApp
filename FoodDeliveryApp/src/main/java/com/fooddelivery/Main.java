@@ -6,6 +6,7 @@ import com.fooddelivery.infrastructure.bootstrap.AppSeeder;
 import com.fooddelivery.infrastructure.bootstrap.DashboardFactory;
 import com.fooddelivery.infrastructure.bootstrap.DemoLauncher;
 import com.fooddelivery.model.User;
+import com.fooddelivery.soap.SoapServer;
 import com.fooddelivery.ui.LoginRegisterPanel;
 import com.fooddelivery.ui.UITheme;
 
@@ -15,11 +16,13 @@ import java.io.IOException;
 
 /**
  * Application entry point.
+ * Starts REST API (8080), SOAP API (9090), and Swing UI.
  */
 public class Main {
 
     private static JFrame frame;
     private static ApiServer apiServer;
+    private static SoapServer soapServer;
     private static AppContext context;
     private static DashboardFactory dashboardFactory;
 
@@ -31,19 +34,27 @@ public class Main {
 
         new AppSeeder(context).seedIfNeeded();
 
+        // Start REST API
         apiServer = new ApiServer();
         try {
             apiServer.start();
         } catch (IOException e) {
-            System.err.println("Warning: Could not start API server – " + e.getMessage());
+            System.err.println("Warning: Could not start REST API server – " + e.getMessage());
+        }
+
+        // Start SOAP API
+        soapServer = new SoapServer();
+        try {
+            soapServer.start(context);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not start SOAP server – " + e.getMessage());
         }
 
         SwingUtilities.invokeLater(Main::showStartupDialog);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (apiServer != null) {
-                apiServer.stop();
-            }
+            if (apiServer != null) apiServer.stop();
+            if (soapServer != null) soapServer.stop();
         }));
     }
 

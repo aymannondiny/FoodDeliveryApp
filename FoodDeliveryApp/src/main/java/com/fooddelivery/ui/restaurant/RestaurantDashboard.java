@@ -60,7 +60,11 @@ public class RestaurantDashboard extends JPanel {
         topBar.setBackground(UITheme.SECONDARY);
         topBar.setBorder(BorderFactory.createEmptyBorder(10, 16, 10, 16));
 
-        titleLabel = new JLabel("🍽  " + restaurant.getName() + "  –  Owner Dashboard");
+        String ratingDisplay = restaurant.getTotalRatings() > 0
+                ? String.format("  ★ %.1f (%d)", restaurant.getRating(), restaurant.getTotalRatings())
+                : "";
+
+        titleLabel = new JLabel("🍽  " + restaurant.getName() + ratingDisplay + "  –  Owner Dashboard");
         titleLabel.setFont(UITheme.FONT_TITLE);
         titleLabel.setForeground(Color.WHITE);
 
@@ -105,6 +109,7 @@ public class RestaurantDashboard extends JPanel {
         tabs = new JTabbedPane();
         tabs.setFont(UITheme.FONT_BODY);
         tabs.addTab("📋 Live Orders", buildOrdersTab());
+        tabs.addTab("📦 All Orders", buildAllOrdersTab());
         tabs.addTab("🍴 Menu", buildMenuTab());
         tabs.addTab("⚙  Settings", buildSettingsTab());
 
@@ -168,7 +173,7 @@ public class RestaurantDashboard extends JPanel {
         JPanel card = new JPanel(new BorderLayout(10, 4));
         card.setBackground(UITheme.CARD_BG);
         card.setBorder(UITheme.cardBorder());
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, order.isRated() ? 155 : 130));
 
         JLabel idLabel = new JLabel("Order #" + order.getOrderId());
         idLabel.setFont(UITheme.FONT_BOLD);
@@ -182,12 +187,21 @@ public class RestaurantDashboard extends JPanel {
         JLabel statusLabel = new JLabel(order.getStatusDescription());
         statusLabel.setForeground(UITheme.SUCCESS);
 
-        JPanel info = new JPanel(new GridLayout(4, 1, 0, 2));
+        int infoRows = order.isRated() ? 5 : 4;
+        JPanel info = new JPanel(new GridLayout(infoRows, 1, 0, 2));
         info.setOpaque(false);
         info.add(idLabel);
         info.add(itemsLabel);
         info.add(totalLabel);
         info.add(statusLabel);
+
+        if (order.isRated()) {
+            JLabel ratingLabel = new JLabel("⭐ Customer rated: " + order.getFoodRatingText());
+            ratingLabel.setFont(UITheme.FONT_SMALL);
+            ratingLabel.setForeground(UITheme.STAR_COLOR);
+            info.add(ratingLabel);
+        }
+
         card.add(info, BorderLayout.CENTER);
 
         JPanel btns = new JPanel(new GridLayout(2, 1, 0, 4));
@@ -504,6 +518,29 @@ public class RestaurantDashboard extends JPanel {
             addToGrid(panel, fields[i], gc);
         }
 
+        gc.gridy = rows.length * 2;
+        gc.insets = new Insets(12, 4, 4, 4);
+
+        JPanel ratingCard = new JPanel(new BorderLayout());
+        ratingCard.setBackground(new Color(0xFFF8E1, false));
+        ratingCard.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UITheme.STAR_COLOR),
+                BorderFactory.createEmptyBorder(10, 14, 10, 14)
+        ));
+
+        JLabel ratingTitle = new JLabel("⭐ Overall Rating");
+        ratingTitle.setFont(UITheme.FONT_BOLD);
+        ratingTitle.setForeground(UITheme.STAR_COLOR);
+
+        JLabel ratingValue = new JLabel(settings.getRatingText());
+        ratingValue.setFont(UITheme.FONT_HEADING);
+        ratingValue.setForeground(UITheme.TEXT_MAIN);
+
+        ratingCard.add(ratingTitle, BorderLayout.NORTH);
+        ratingCard.add(ratingValue, BorderLayout.CENTER);
+
+        addToGrid(panel, ratingCard, gc);
+
         JButton save = UITheme.primaryButton("Save Settings");
         save.addActionListener(e -> {
             try {
@@ -535,7 +572,8 @@ public class RestaurantDashboard extends JPanel {
             }
         });
 
-        gc.gridy = rows.length * 2 + 1;
+        gc.gridy = rows.length * 2 + 2;
+        gc.insets = new Insets(8, 4, 8, 4);
         addToGrid(panel, save, gc);
 
         JPanel wrapper = new JPanel(new BorderLayout());
@@ -702,6 +740,58 @@ public class RestaurantDashboard extends JPanel {
                     JOptionPane.ERROR_MESSAGE
             );
         }
+    }
+
+    private JPanel buildAllOrdersTab() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(UITheme.BG);
+
+        JPanel hdr = new JPanel(new BorderLayout());
+        hdr.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        hdr.setBackground(UITheme.BG);
+
+        JButton refresh = UITheme.primaryButton("↻ Refresh");
+        refresh.addActionListener(e -> refreshAllOrders(panel));
+        hdr.add(refresh, BorderLayout.EAST);
+
+        panel.add(hdr, BorderLayout.NORTH);
+        panel.add(buildAllOrdersContent(), BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    private void refreshAllOrders(JPanel panel) {
+        if (panel.getComponentCount() > 1) {
+            panel.remove(panel.getComponent(1));
+        }
+
+        panel.add(buildAllOrdersContent(), BorderLayout.CENTER);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private JScrollPane buildAllOrdersContent() {
+        List<RestaurantOrderViewModel> allOrders = controller.loadAllOrders(restaurant.getId());
+
+        JPanel list = new JPanel();
+        list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
+        list.setBackground(UITheme.BG);
+        list.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+
+        if (allOrders.isEmpty()) {
+            JLabel lbl = new JLabel("No orders yet.", SwingConstants.CENTER);
+            lbl.setFont(UITheme.FONT_HEADING);
+            lbl.setForeground(UITheme.TEXT_MUTED);
+            list.add(lbl);
+        } else {
+            for (RestaurantOrderViewModel order : allOrders) {
+                list.add(buildOrderCard(order));
+            }
+        }
+
+        JScrollPane scroll = new JScrollPane(list);
+        scroll.setBorder(null);
+        return scroll;
     }
 
 }

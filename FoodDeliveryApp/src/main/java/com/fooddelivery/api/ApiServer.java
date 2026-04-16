@@ -89,6 +89,10 @@ public class ApiServer {
                 new CouponHandler(couponValidator, new CouponResponseMapper())
         );
 
+        // SOAP test UI
+        server.createContext("/soap-test", new com.fooddelivery.soap.client.SoapTestPageHandler());
+        server.createContext("/soap-proxy", new com.fooddelivery.soap.client.SoapProxyHandler());
+
         server.setExecutor(Executors.newFixedThreadPool(4));
         server.start();
 

@@ -83,7 +83,7 @@ public class OrderHistoryPanel extends JPanel {
         JPanel card = new JPanel(new BorderLayout(10, 6));
         card.setBackground(UITheme.CARD_BG);
         card.setBorder(UITheme.cardBorder());
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
 
         JPanel topRow = new JPanel(new BorderLayout());
         topRow.setOpaque(false);
@@ -96,6 +96,9 @@ public class OrderHistoryPanel extends JPanel {
 
         topRow.add(restaurant, BorderLayout.WEST);
         topRow.add(dateLabel, BorderLayout.EAST);
+
+        JLabel orderIdLabel = UITheme.mutedLabel("Order #" + order.getOrderId());
+        orderIdLabel.setAlignmentX(LEFT_ALIGNMENT);
 
         JLabel itemsLabel = UITheme.mutedLabel(order.getItemsSummaryText());
 
@@ -151,6 +154,20 @@ public class OrderHistoryPanel extends JPanel {
             btnRow.add(cancelBtn);
         }
 
+        if (order.isRateable()) {
+            JButton rateBtn = UITheme.primaryButton("⭐ Rate");
+            rateBtn.setBackground(UITheme.STAR_COLOR);
+            rateBtn.addActionListener(e -> showRatingDialog(order));
+            btnRow.add(rateBtn);
+        }
+
+        if (order.isRated()) {
+            JLabel ratedLabel = new JLabel("  ✓ Rated  ");
+            ratedLabel.setFont(UITheme.FONT_SMALL);
+            ratedLabel.setForeground(UITheme.SUCCESS);
+            btnRow.add(ratedLabel);
+        }
+
         JPanel bottom = new JPanel(new BorderLayout());
         bottom.setOpaque(false);
         bottom.add(totalLabel, BorderLayout.WEST);
@@ -161,11 +178,181 @@ public class OrderHistoryPanel extends JPanel {
         mid.add(itemsLabel, BorderLayout.WEST);
         mid.add(statusLabel, BorderLayout.EAST);
 
-        card.add(topRow, BorderLayout.NORTH);
+        JPanel northPanel = new JPanel();
+        northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
+        northPanel.setOpaque(false);
+        topRow.setAlignmentX(LEFT_ALIGNMENT);
+        orderIdLabel.setAlignmentX(LEFT_ALIGNMENT);
+        northPanel.add(topRow);
+        northPanel.add(orderIdLabel);
+
+        card.add(northPanel, BorderLayout.NORTH);
         card.add(mid, BorderLayout.CENTER);
         card.add(bottom, BorderLayout.SOUTH);
 
         return card;
+    }
+
+    private void showRatingDialog(OrderSummaryViewModel order) {
+        JDialog dialog = new JDialog(
+                (Frame) SwingUtilities.getWindowAncestor(this),
+                "Rate Order – " + order.getRestaurantName(),
+                true
+        );
+        dialog.setSize(400, 350);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout(10, 10));
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        panel.setBackground(UITheme.CARD_BG);
+
+        JLabel orderLabel = new JLabel("Order #" + order.getOrderId());
+        orderLabel.setFont(UITheme.FONT_BOLD);
+        orderLabel.setForeground(UITheme.SECONDARY);
+        orderLabel.setAlignmentX(LEFT_ALIGNMENT);
+
+        JLabel restaurantLabel = new JLabel("From: " + order.getRestaurantName());
+        restaurantLabel.setFont(UITheme.FONT_BODY);
+        restaurantLabel.setAlignmentX(LEFT_ALIGNMENT);
+
+        panel.add(orderLabel);
+        panel.add(restaurantLabel);
+        panel.add(Box.createVerticalStrut(20));
+
+        JLabel foodLabel = new JLabel("🍽  Rate the food:");
+        foodLabel.setFont(UITheme.FONT_BOLD);
+        foodLabel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.add(foodLabel);
+        panel.add(Box.createVerticalStrut(4));
+
+        JPanel foodStars = createStarPanel();
+        foodStars.setAlignmentX(LEFT_ALIGNMENT);
+        panel.add(foodStars);
+
+        panel.add(Box.createVerticalStrut(16));
+
+        JLabel riderLabel = new JLabel("🛵  Rate the rider:");
+        riderLabel.setFont(UITheme.FONT_BOLD);
+        riderLabel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.add(riderLabel);
+        panel.add(Box.createVerticalStrut(4));
+
+        JPanel riderStars = createStarPanel();
+        riderStars.setAlignmentX(LEFT_ALIGNMENT);
+        panel.add(riderStars);
+
+        dialog.add(panel, BorderLayout.CENTER);
+
+        JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+
+        JButton cancelBtn = UITheme.secondaryButton("Cancel");
+        cancelBtn.addActionListener(e -> dialog.dispose());
+
+        JButton submitBtn = UITheme.primaryButton("Submit Rating");
+        submitBtn.setBackground(UITheme.STAR_COLOR);
+        submitBtn.addActionListener(e -> {
+            int foodRating = getSelectedRating(foodStars);
+            int riderRating = getSelectedRating(riderStars);
+
+            if (foodRating == 0 || riderRating == 0) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "Please select a rating for both food and rider.",
+                        "Rating Required",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            try {
+                controller.rateOrder(order.getOrderId(), foodRating, riderRating);
+                dialog.dispose();
+                refresh();
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        String.format(
+                                "Thank you for rating!\nFood: %s\nRider: %s",
+                                "★".repeat(foodRating),
+                                "★".repeat(riderRating)
+                        ),
+                        "Rating Submitted",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        ex.getMessage(),
+                        "Rating Failed",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
+
+        btnRow.add(cancelBtn);
+        btnRow.add(submitBtn);
+        dialog.add(btnRow, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
+
+    private JPanel createStarPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        panel.setOpaque(false);
+
+        ButtonGroup group = new ButtonGroup();
+
+        for (int i = 1; i <= 5; i++) {
+            JToggleButton star = new JToggleButton(String.valueOf(i) + " ★");
+            star.setFont(UITheme.FONT_BOLD);
+            star.setFocusPainted(false);
+            star.setBackground(UITheme.CARD_BG);
+            star.setForeground(UITheme.TEXT_MUTED);
+            star.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(UITheme.BORDER_COLOR),
+                    BorderFactory.createEmptyBorder(6, 10, 6, 10)
+            ));
+            star.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            star.putClientProperty("rating", i);
+
+            final int rating = i;
+            star.addActionListener(e -> {
+                for (Component c : panel.getComponents()) {
+                    if (c instanceof JToggleButton) {
+                        JToggleButton btn = (JToggleButton) c;
+                        int btnRating = (int) btn.getClientProperty("rating");
+                        if (btnRating <= rating) {
+                            btn.setBackground(UITheme.STAR_COLOR);
+                            btn.setForeground(Color.WHITE);
+                        } else {
+                            btn.setBackground(UITheme.CARD_BG);
+                            btn.setForeground(UITheme.TEXT_MUTED);
+                        }
+                    }
+                }
+            });
+
+            group.add(star);
+            panel.add(star);
+        }
+
+        return panel;
+    }
+
+    private int getSelectedRating(JPanel starPanel) {
+        int maxSelected = 0;
+        for (Component c : starPanel.getComponents()) {
+            if (c instanceof JToggleButton) {
+                JToggleButton btn = (JToggleButton) c;
+                int rating = (int) btn.getClientProperty("rating");
+                if (btn.getBackground().equals(UITheme.STAR_COLOR)) {
+                    maxSelected = Math.max(maxSelected, rating);
+                }
+            }
+        }
+        return maxSelected;
     }
 
     private void showTrackingDialog(String orderId) {

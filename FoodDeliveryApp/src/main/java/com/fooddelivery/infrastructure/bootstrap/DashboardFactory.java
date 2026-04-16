@@ -125,7 +125,8 @@ public class DashboardFactory {
                 context.advanceOrderStatusUseCase(),
                 context.completeDeliveryUseCase(),
                 context.findRiderByIdUseCase(),
-                context.getPaymentForOrderUseCase()
+                context.getPaymentForOrderUseCase(),
+                context.rateOrderUseCase()
         );
     }
 
@@ -140,7 +141,8 @@ public class DashboardFactory {
                 context.getActiveRestaurantOrdersUseCase(),
                 context.advanceOrderStatusUseCase(),
                 context.cancelOrderUseCase(),
-                context.completeDeliveryUseCase()
+                context.completeDeliveryUseCase(),
+                context.getRestaurantOrdersUseCase()
         );
     }
 
@@ -156,7 +158,8 @@ public class DashboardFactory {
                 context.getOrderByIdUseCase(),
                 context.advanceOrderStatusUseCase(),
                 context.completeDeliveryUseCase(),
-                context.getDeliveredOrdersForRiderUseCase()
+                context.getDeliveredOrdersForRiderUseCase(),
+                context.riderRepository()
         );
     }
 }

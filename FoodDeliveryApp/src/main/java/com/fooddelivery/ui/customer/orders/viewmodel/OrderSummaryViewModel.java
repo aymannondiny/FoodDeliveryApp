@@ -12,6 +12,8 @@ public class OrderSummaryViewModel {
     private final String statusText;
     private final String totalText;
     private final boolean cancellable;
+    private final boolean rateable;
+    private final boolean rated;
 
     public OrderSummaryViewModel(String orderId,
                                  String restaurantName,
@@ -20,7 +22,9 @@ public class OrderSummaryViewModel {
                                  OrderStatus status,
                                  String statusText,
                                  String totalText,
-                                 boolean cancellable) {
+                                 boolean cancellable,
+                                 boolean rateable,
+                                 boolean rated) {
         this.orderId = orderId;
         this.restaurantName = restaurantName;
         this.dateText = dateText;
@@ -29,6 +33,8 @@ public class OrderSummaryViewModel {
         this.statusText = statusText;
         this.totalText = totalText;
         this.cancellable = cancellable;
+        this.rateable = rateable;
+        this.rated = rated;
     }
 
     public String getOrderId() {
@@ -61,5 +67,13 @@ public class OrderSummaryViewModel {
 
     public boolean isCancellable() {
         return cancellable;
+    }
+
+    public boolean isRateable() {
+        return rateable;
+    }
+
+    public boolean isRated() {
+        return rated;
     }
 }

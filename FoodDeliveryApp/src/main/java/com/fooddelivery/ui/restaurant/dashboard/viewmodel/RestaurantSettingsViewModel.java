@@ -9,6 +9,8 @@ public class RestaurantSettingsViewModel {
     private final String openTime;
     private final String closeTime;
     private final String description;
+    private final String ratingText;
+    private final int totalRatings;
 
     public RestaurantSettingsViewModel(String name,
                                        String phone,
@@ -16,7 +18,9 @@ public class RestaurantSettingsViewModel {
                                        String etaText,
                                        String openTime,
                                        String closeTime,
-                                       String description) {
+                                       String description,
+                                       String ratingText,
+                                       int totalRatings) {
         this.name = name;
         this.phone = phone;
         this.minOrderText = minOrderText;
@@ -24,6 +28,8 @@ public class RestaurantSettingsViewModel {
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.description = description;
+        this.ratingText = ratingText;
+        this.totalRatings = totalRatings;
     }
 
     public String getName() {
@@ -52,5 +58,13 @@ public class RestaurantSettingsViewModel {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getRatingText() {
+        return ratingText;
+    }
+
+    public int getTotalRatings() {
+        return totalRatings;
     }
 }
